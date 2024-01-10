@@ -1,12 +1,13 @@
 // this shim is required
 import { createExpressServer, getMetadataArgsStorage, useExpressServer } from 'routing-controllers';
-import { UserController } from './controllers/user.controllers';
+import { UserController } from './controllers/user.controller';
 import { defaultMetadataStorage } from 'class-transformer/cjs/storage';
 import { routingControllersToSpec } from 'routing-controllers-openapi';
 import * as swaggerUi from 'swagger-ui-express';
 import * as express from 'express';
 import * as swaggerUiDist from 'swagger-ui-dist';
 import { validationMetadatasToSchemas } from 'class-validator-jsonschema';
+import concectDB from './db';
 
 class App {
     public app: express.Application;
@@ -37,6 +38,10 @@ class App {
 
     public getServer() {
         return this.app;
+    }
+
+    public dbConnection () {
+        concectDB();
     }
 
     private initializeRoutes(controllers: Function[]) {
