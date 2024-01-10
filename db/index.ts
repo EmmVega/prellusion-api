@@ -1,5 +1,4 @@
-const { Sequelize } = require("sequelize");
-const db = require("../models/");
+import { db } from "../models/";
 
 async function connectDB() {
   try {

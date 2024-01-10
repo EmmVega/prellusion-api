@@ -2,10 +2,10 @@
   "name": "prellusion-api",
   "version": "1.0.0",
   "description": "api for prellusion-ui",
-  "main": "index.js",
+  "main": "src/server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.ts",
+    "start": "nodemon src/server.ts",
     "migrate": "npx sequelize-cli db:migrate",
     "undo": "npx sequelize-cli db:migrate:undo"
   },

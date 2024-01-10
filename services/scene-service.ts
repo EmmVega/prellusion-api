@@ -1,5 +1,5 @@
 import { SceneDto } from "../interfaces/scene.dto";
-const db = require("../models/");
+import { db } from "../models";
 
 class SceneService {
   public scenes = [];
