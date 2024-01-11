@@ -2,14 +2,23 @@ import { SceneDto } from "../interfaces/scene.dto";
 import { db } from "../models";
 
 class SceneService {
-  public scenes = [];
   public async createScene(scene: SceneDto) {
     try {
-      const newScene = await db.Scene.create(scene);
-      this.scenes.push(newScene);
-      return this.scenes;
+      const response = await db.Scene.create(scene);
+      return response.dataValues;
     } catch (e) {
       console.log("ERROR: ", e);
+    }
+  }
+
+  public async getAllScenes() {
+    try {
+      const scenes = await db.Scene.findAll();
+      const scenesDataValues = scenes.map((scene) => scene.get());
+      return scenesDataValues;
+    } catch (e) {
+      console.log("ERROR: ", e);
+      throw e;
     }
   }
 }
