@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/server.ts",
     "migrate": "npx sequelize-cli db:migrate",
-    "undo": "npx sequelize-cli db:migrate:undo"
+    "undo": "npx sequelize-cli db:migrate:undo",
+    "build": "tsc"
   },
   "author": "EmmVega",
   "license": "ISC",
@@ -30,9 +31,5 @@
     "nodemon": "^3.0.2",
     "swagger-ui-express": "^5.0.0",
     "typescript": "^5.3.3"
-  },
-  "tsconfig": {
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
   }
 }
