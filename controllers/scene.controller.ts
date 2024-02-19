@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import { Body, Post, JsonController, Get } from "routing-controllers";
-import { OpenAPI } from "routing-controllers-openapi";
+import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
 import { SceneDto } from "../interfaces/scene.dto";
 import SceneService from "../services/scene-service";
+import { validateOrReject } from "class-validator";
 
 @JsonController()
 export class SceneController {
@@ -18,12 +19,17 @@ export class SceneController {
 
   @Post("/scenes")
   @OpenAPI({
-    summary: "TESTING SUMMARY",
+    summary: "To post/create a new scene",
   })
-  post(
-    @Body()
+  async post(
+    @Body({ validate: true })
     scene: SceneDto
   ) {
-    return this.sceneService.createScene(scene);
+    try {
+      return this.sceneService.createScene(scene);
+    } catch (e) {
+      console.log("ERROR: ", e);
+      throw e;
+    }
   }
 }

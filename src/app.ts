@@ -4,6 +4,7 @@ import { routingControllersToSpec } from "routing-controllers-openapi";
 import * as swaggerUi from "swagger-ui-express";
 import * as express from "express";
 import concectDB from "../db";
+import { GlobalErrorHandler } from "../middlewares/Error-middleware";
 
 class App {
   public app: express.Application;
@@ -12,7 +13,7 @@ class App {
 
   constructor(Controllers: Function[]) {
     this.app = express();
-    this.port = 3000;
+    this.port = 3001;
 
     // this.initializeMiddlewares();
     this.initializeRoutes(Controllers);
@@ -26,7 +27,7 @@ class App {
   public listen() {
     this.app.listen(this.port, () => {
       console.log("============");
-      console.log("APP LISTENING ON PORT 3000");
+      console.log("APP LISTENING ON PORT 3001");
       console.log("============");
     });
   }
@@ -43,6 +44,7 @@ class App {
     useExpressServer(this.app, {
       controllers: controllers,
       defaultErrorHandler: false,
+      middlewares: [GlobalErrorHandler],
     });
   }
 
