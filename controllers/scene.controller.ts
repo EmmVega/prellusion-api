@@ -1,9 +1,16 @@
 import "reflect-metadata";
-import { Body, Post, JsonController, Get } from "routing-controllers";
+import {
+  Body,
+  Post,
+  JsonController,
+  Get,
+  Param,
+  Patch,
+  Delete,
+} from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
 import { SceneDto } from "../interfaces/scene.dto";
 import SceneService from "../services/scene-service";
-import { validateOrReject } from "class-validator";
 
 @JsonController()
 export class SceneController {
@@ -17,6 +24,20 @@ export class SceneController {
     return this.sceneService.getAllScenes();
   }
 
+  @Get("/scenes/:id")
+  @OpenAPI({
+    summary: "To get a scene by id",
+  })
+  @ResponseSchema(SceneDto)
+  async getById(@Param("id") id: number) {
+    try {
+      return await this.sceneService.getSceneById(id);
+    } catch (e) {
+      console.log("ERROR: ", e);
+      throw e;
+    }
+  }
+
   @Post("/scenes")
   @OpenAPI({
     summary: "To post/create a new scene",
@@ -26,7 +47,37 @@ export class SceneController {
     scene: SceneDto
   ) {
     try {
-      return this.sceneService.createScene(scene);
+      return await this.sceneService.createScene(scene);
+    } catch (e) {
+      console.log("ERROR: ", e);
+      throw e;
+    }
+  }
+
+  @Patch("/scenes/:id")
+  @OpenAPI({
+    summary: "To update a scene by id",
+  })
+  async patchById(
+    @Param("id") id: number,
+    @Body({ validate: true })
+    scene: SceneDto
+  ) {
+    try {
+      return await this.sceneService.updateScene(id, scene);
+    } catch (e) {
+      console.log("ERROR: ", e);
+      throw e;
+    }
+  }
+
+  @Delete("/scenes/:id")
+  @OpenAPI({
+    summary: "To delete a scene by id",
+  })
+  async deleteById(@Param("id") id: number) {
+    try {
+      return await this.sceneService.deleteScene(id);
     } catch (e) {
       console.log("ERROR: ", e);
       throw e;

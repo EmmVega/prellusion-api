@@ -21,6 +21,48 @@ class SceneService {
       throw e;
     }
   }
+
+  public async getSceneById(id: number) {
+    try {
+      const scene = await db.Scene.findByPk(id);
+      const sceneDataValues = scene.get();
+      return sceneDataValues;
+    } catch (e) {
+      console.log("ERROR: ", e);
+      throw e;
+    }
+  }
+
+  public async updateScene(id: number, scene: SceneDto) {
+    try {
+      await db.Scene.update(scene, {
+        where: {
+          id,
+        },
+      });
+      const updatedScene = await db.Scene.findByPk(id);
+      const updatedSceneDataValues = updatedScene.get();
+      return updatedSceneDataValues;
+    } catch (e) {
+      console.log("ERROR: ", e);
+      throw e;
+    }
+  }
+
+  public async deleteScene(id: number) {
+    try {
+      const deletedScene = await db.Scene.findByPk(id);
+      await db.Scene.destroy({
+        where: {
+          id,
+        },
+      });
+      return deletedScene;
+    } catch (e) {
+      console.log("ERROR: ", e);
+      throw e;
+    }
+  }
 }
 
 export default SceneService;
