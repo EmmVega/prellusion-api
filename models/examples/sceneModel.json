@@ -1,0 +1,28 @@
+{
+    "postScene": {
+      "number": 1,
+      "shotNumber": 1,
+      "shot": "Example shot",
+      "movement": "Example movement",
+      "angulation": "Example angulation",
+      "action": "Example action",
+      "dialogue": true,
+      "sound": true,
+      "transition": "Example transition",
+      "notes": "Example notes",
+      "script": 1
+    },
+    "patchScene": {
+        "number": 1,
+        "shotNumber": 1,
+        "shot": "Example shot",
+        "movement": "Example movement",
+        "angulation": "Example angulation",
+        "action": "Example action",
+        "dialogue": true,
+        "sound": true,
+        "transition": "Example transition",
+        "notes": "SCENE PATCHED!",
+        "script": 1
+      }
+  }
