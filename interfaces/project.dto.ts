@@ -1,17 +1,16 @@
 import { Type } from "class-transformer";
 import { IsNumber, IsString } from "class-validator";
 
-export class Project {
+export class ProjectDto {
    @Type(() => Number)
-   @IsNumber()
-   public id: number;
-
-   @IsString()
-   public userId: string;
+   public userId: number;
 
    @IsString()
    public name: string;
 
    @IsString()
    public notes: string;
+
+   @Type(() => Number)
+   public sceneIds: number[];
 }

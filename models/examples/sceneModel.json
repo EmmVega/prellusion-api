@@ -26,11 +26,5 @@
         "notes": "SCENE PATCHED!",
         "script": 1,
         "projectId": 1
-      },
-      "postProject": {
-        "userId": 1,
-        "name": "Example project",
-        "notes": "Example notes",
-        "sceneIds": []
       }
   }
