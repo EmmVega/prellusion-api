@@ -10,7 +10,8 @@
       "sound": true,
       "transition": "Example transition",
       "notes": "Example notes",
-      "script": 1
+      "script": 1,
+      "projectId": 1
     },
     "patchScene": {
         "number": 1,
@@ -23,6 +24,13 @@
         "sound": true,
         "transition": "Example transition",
         "notes": "SCENE PATCHED!",
-        "script": 1
+        "script": 1,
+        "projectId": 1
+      },
+      "postProject": {
+        "userId": 1,
+        "name": "Example project",
+        "notes": "Example notes",
+        "sceneIds": []
       }
   }

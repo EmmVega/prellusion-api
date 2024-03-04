@@ -8,7 +8,8 @@
     "start": "nodemon src/server.ts",
     "migrate": "npx sequelize-cli db:migrate",
     "undo": "npx sequelize-cli db:migrate:undo",
-    "build": "tsc"
+    "build": "tsc",
+    "resetDb": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate"
   },
   "author": "EmmVega",
   "license": "ISC",
