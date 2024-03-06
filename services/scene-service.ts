@@ -1,5 +1,5 @@
 import { HttpError } from "routing-controllers";
-import { SceneDto } from "../interfaces/scene.dto";
+import { SceneDto } from "../DTOs/scene.dto";
 import { db } from "../models";
 
 class SceneService {

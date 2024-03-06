@@ -1,5 +1,5 @@
 import { HttpError } from "routing-controllers";
-import { ProjectDto } from "../interfaces/project.dto";
+import { ProjectDto } from "../DTOs/project.dto";
 import { db } from "../models";
 
 class ProjectService {

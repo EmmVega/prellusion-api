@@ -9,7 +9,7 @@ import {
    Delete,
 } from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
-import { SceneDto } from "../interfaces/scene.dto";
+import { SceneDto } from "../DTOs/scene.dto";
 import SceneService from "../services/scene-service";
 import * as requestExamples from "../models/examples/sceneModel.json";
 

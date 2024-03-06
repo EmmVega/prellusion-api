@@ -9,7 +9,7 @@ import {
    Delete,
 } from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
-import { ProjectDto } from "../interfaces/project.dto";
+import { ProjectDto } from "../DTOs/project.dto";
 import ProjectService from "../services/project-service";
 import * as requestExamples from "../models/examples/projectModel.json";
 
