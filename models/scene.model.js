@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
        */
       static associate(models) {
          // define association here
-         Scene.belongsTo(models.Project, { foreignKey: "projectId" });
+         Scene.belongsTo(models.Project, { foreignKey: "id" });
       }
    }
    Scene.init(
