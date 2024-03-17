@@ -7,11 +7,13 @@ import {
    Param,
    Patch,
    Delete,
+   UseBefore,
 } from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
 import { ProjectDto } from "../DTOs/project.dto";
 import ProjectService from "../services/project-service";
 import * as requestExamples from "../models/examples/projectModel.json";
+import { fileUpload } from "../middlewares/scriptProject-middleware";
 
 @JsonController()
 export class ProjectController {
@@ -40,6 +42,7 @@ export class ProjectController {
    }
 
    @Post("/projects")
+   @UseBefore(fileUpload.single("script"))
    @OpenAPI({
       summary: "To post/create a new project",
       requestBody: {
@@ -55,6 +58,7 @@ export class ProjectController {
       project: ProjectDto
    ) {
       try {
+         console.log("CONTROLLER: ", project);
          return await this.projectService.createProject(project);
       } catch (e) {
          console.log("ERROR: ", e);

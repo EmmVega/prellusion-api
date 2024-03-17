@@ -1,4 +1,3 @@
-import { ValidationError } from "class-validator";
 import {
    Middleware,
    ExpressErrorMiddlewareInterface,

@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       {
          userId: DataTypes.INTEGER,
          name: DataTypes.STRING,
-         notes: DataTypes.STRING,
+         draft: DataTypes.STRING,
          sceneIds: DataTypes.ARRAY(DataTypes.INTEGER),
       },
       {

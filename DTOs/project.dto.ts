@@ -9,7 +9,7 @@ export class ProjectDto {
    public name: string;
 
    @IsString()
-   public notes: string;
+   public draft: string;
 
    @Type(() => Number)
    public sceneIds: number[];

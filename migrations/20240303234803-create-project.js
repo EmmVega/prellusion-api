@@ -15,7 +15,7 @@ module.exports = {
          name: {
             type: Sequelize.STRING,
          },
-         notes: {
+         draft: {
             type: Sequelize.STRING,
          },
          sceneIds: {
