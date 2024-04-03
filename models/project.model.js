@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
          name: DataTypes.STRING,
          draft: DataTypes.STRING,
          sceneIds: DataTypes.ARRAY(DataTypes.INTEGER),
+         fileId: DataTypes.INTEGER,
       },
       {
          sequelize,
