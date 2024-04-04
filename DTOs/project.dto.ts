@@ -13,4 +13,7 @@ export class ProjectDto {
 
    @Type(() => Number)
    public sceneIds: number[];
+
+   @Type(() => Number)
+   public fileId: number;
 }

@@ -19,6 +19,8 @@
     "class-validator-jsonschema": "^5.0.0",
     "express": "^4.18.2",
     "multer": "^1.4.5-lts.1",
+    "openai": "^4.29.2",
+    "pdf-parse": "^1.1.1",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.2.1",

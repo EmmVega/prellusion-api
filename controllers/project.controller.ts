@@ -24,7 +24,12 @@ export class ProjectController {
       summary: "To get all projects",
    })
    get() {
-      return this.projectService.getAllProjects();
+      //TODO: it seems this endpoint will not be used, since we never get all user projects
+      //(as user with single project, maybe if UI shows all projects)
+      // return this.projectService.getAllProjects();
+
+      //this service is here as example, it will live on POST /projects
+      return this.projectService.scriptParser();
    }
 
    @Get("/projects/:id")
