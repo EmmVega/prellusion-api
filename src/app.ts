@@ -6,6 +6,8 @@ import * as express from "express";
 import concectDB from "../db";
 import { GlobalErrorHandler } from "../middlewares/Error-middleware";
 import { CorsMiddleware } from "../middlewares/cors-middleware";
+import { createHandler } from "graphql-http";
+import { schema, root } from "../graphql/schemas";
 
 class App {
    public app: express.Application;
