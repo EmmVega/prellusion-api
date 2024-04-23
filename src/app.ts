@@ -6,7 +6,7 @@ import * as express from "express";
 import concectDB from "../db";
 import { GlobalErrorHandler } from "../middlewares/Error-middleware";
 import { CorsMiddleware } from "../middlewares/cors-middleware";
-import { createHandler } from "graphql-http";
+import { createHandler } from "graphql-http/lib/use/express";
 import { schema, root } from "../graphql/schemas";
 
 class App {
@@ -19,6 +19,7 @@ class App {
       this.port = 3001;
 
       // this.initializeMiddlewares();
+      this.initializeGraphQL(); // Add this line
       this.initializeRoutes(Controllers);
       this.initializeSwagger(Controllers);
    }
@@ -101,6 +102,14 @@ class App {
          swaggerUi.setup(spec, options)
       );
    }
+
+   private initializeGraphQL() {
+      console.log("Initializing GraphQL...");
+      this.app.all("/graphql", createHandler({
+        schema: schema,
+        rootValue: root,
+      }));
+    }
 }
 
 export default App;
