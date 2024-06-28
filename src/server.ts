@@ -1,9 +1,6 @@
-import { createHandler } from "graphql-http";
-import { ProjectController } from "../controllers/project.controller";
-import { SceneController } from "../controllers/scene.controller";
-import { UserController } from "../controllers/user.controller";
-import App from "./app";
+import App from './app';
 
-const app = new App([SceneController, ProjectController]);
+const app = new App();
+
 app.dbConnection();
 app.listen();

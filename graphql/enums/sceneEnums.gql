@@ -1,0 +1,57 @@
+
+enum Movements {
+   Steady
+   Handy
+   DollyIn
+   DollyOut
+   CreaneUp
+   CreaneDown
+   TruckLeft
+   TruckRight
+   PanClockwise
+   PanCounterClockwise
+   TiltUp
+   TiltDown
+   RollClockwise
+   RollCounterClockwise
+   ArcClockwise
+   ArcCounterClockwise
+}
+
+enum Angulations {
+   Cenital
+   Picado
+   Horizontal
+   Contrapicado
+   Nadir
+   Holandes
+}
+
+enum Transitions {
+   Straight
+   Jump
+   LCut
+   JCut
+   Match
+   Smash
+   OnAction
+   Away
+   Cross
+   FadeIn
+   FadeOut
+   Dissolve
+}
+
+enum Shots {
+   Tight
+   ExtremeCloseUp
+   CloseUp
+   Medium
+   American
+   Full
+   Wide
+   UltraWide
+   Long
+   ExtremeLongShot
+   PointOfView
+}

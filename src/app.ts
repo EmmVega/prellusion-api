@@ -8,107 +8,52 @@ import { GlobalErrorHandler } from "../middlewares/Error-middleware";
 import { CorsMiddleware } from "../middlewares/cors-middleware";
 import { createHandler } from "graphql-http/lib/use/express";
 import { schema, root } from "../graphql/schemas";
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { resolvers } from "../graphql/resolvers";
+import typeDefs from "../graphql/typedefs";
 
 class App {
-   public app: express.Application;
+   public server
+   // public app: express.Application;
    public env: string;
-   public port: string | number;
+   public port:  number;
 
-   constructor(Controllers: Function[]) {
-      this.app = express();
-      this.port = 3001;
+   constructor() {
+      // this.app = express();
+      this.port = 4000;
 
       // this.initializeMiddlewares();
-      this.initializeGraphQL(); // Add this line
-      this.initializeRoutes(Controllers);
-      this.initializeSwagger(Controllers);
+      this.initializeApolloServer(); // Add this line
    }
 
    // private initializeMiddlewares() {
    //     this.app
    // }
 
-   public listen() {
-      this.app.listen(this.port, () => {
-         console.log("============");
-         console.log("APP LISTENING ON PORT 3001");
-         console.log("============");
+   public async listen() {
+      //   Passing an ApolloServer instance to the `startStandaloneServer` function:
+      //    1. creates an Express app
+      //    2. installs your ApolloServer instance as middleware
+      //    3. prepares your app to handle incoming requests
+      const { url } = await startStandaloneServer(this.server, {
+         listen: { port: this.port },
       });
-   }
-
-   public getServer() {
-      return this.app;
+      
+      console.log(`🚀  Server ready at: ${url}`);
    }
 
    public dbConnection() {
       concectDB();
    }
 
-   private initializeRoutes(controllers: Function[]) {
-      useExpressServer(this.app, {
-         controllers: controllers,
-         defaultErrorHandler: false,
-         middlewares: [GlobalErrorHandler, CorsMiddleware],
+   private initializeApolloServer() {
+      //   The ApolloServer constructor requires two parameters: your schema
+      // definition and your set of resolvers.
+      this.server = new ApolloServer({
+         typeDefs,
+         resolvers,
       });
-   }
-
-   private initializeSwagger(controllers: Function[]) {
-      const routingControllersOptions = {
-         controllers: controllers,
-      };
-
-      const storage = getMetadataArgsStorage();
-      const spec = routingControllersToSpec(
-         storage,
-         routingControllersOptions,
-         {
-            components: {
-               securitySchemes: {
-                  basicAuth: {
-                     scheme: "basic",
-                     type: "http",
-                  },
-               },
-            },
-            info: {
-               description: "Generated with routing-controllers-openapi",
-               title: "Prellusion",
-               version: "1.0.0",
-            },
-         }
-      );
-
-      // Serve Swagger UI assets from node_modules/swagger-ui-dist
-      this.app.use(
-         "/swagger-ui-dist",
-         express.static(require("swagger-ui-dist").getAbsoluteFSPath())
-      );
-
-      // Serve Swagger JSON spec
-      this.app.get("/api-docs/swagger.json", (req, res) => res.json(spec));
-
-      // Configure Swagger UI
-      const options = {
-         explorer: true,
-         customCss: "/swagger-ui.css",
-         customJs: "/swagger-ui-bundle.js",
-         prefix: "/api-docs",
-      };
-
-      // Serve Swagger UI interface
-      this.app.use(
-         "/api-docs",
-         swaggerUi.serve,
-         swaggerUi.setup(spec, options)
-      );
-   }
-
-   private initializeGraphQL() {
-      console.log("Initializing GraphQL...");
-      this.app.all("/graphql", createHandler({
-        schema: schema,
-        rootValue: root,
-      }));
     }
 }
 

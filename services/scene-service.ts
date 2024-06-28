@@ -37,6 +37,24 @@ class SceneService {
       }
    }
 
+   public async getScenesByProjectId(projectId: number) {
+      try {
+         const scenes = await db.Scene.findAll({
+            where: {
+               projectId,
+            },
+         });
+         if (!scenes) {
+            throw new HttpError(404, "Project not found");
+         }
+         const sceneDataValues = scenes.map(scene => scene.get());
+         return sceneDataValues;
+      } catch (e) {
+         console.log("ERROR: ", e);
+         throw e;
+      }
+   }
+
    public async updateScene(id: number, scene: SceneDto) {
       try {
          await db.Scene.update(scene, {

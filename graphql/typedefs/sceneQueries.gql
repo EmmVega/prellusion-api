@@ -1,0 +1,7 @@
+type Query {
+  scenes: [Scene]
+}
+
+type Query {
+  getScenesByProjectId(projectId: Int!): [Scene]
+}

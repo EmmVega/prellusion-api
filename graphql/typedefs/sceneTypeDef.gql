@@ -1,0 +1,30 @@
+type Scene {
+  id: String!
+  number: Int!
+  shotNumber: String!
+  shot: Shots!
+  movement: Movements!
+  angulation: Angulations!
+  action: String!
+  dialogue: Boolean!
+  sound: Boolean!
+  transition: Transitions!
+  notes: String!
+  script: Int!
+  projectId: Int!
+}
+
+input SceneInput {
+  number: Int!
+  shotNumber: Int!
+  shot: Shots!
+  movement: Movements!
+  angulation: Angulations!
+  action: String!
+  dialogue: Boolean!
+  sound: Boolean!
+  transition: Transitions!
+  notes: String
+  script: Int!
+  projectId: Int!
+}

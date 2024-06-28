@@ -1,0 +1,7 @@
+type Mutation {
+  createSceneMutation(scene: SceneInput!): Scene
+}
+
+type Mutation {
+   updateSceneMutation(id: Int! scene: SceneInput!): Scene
+}

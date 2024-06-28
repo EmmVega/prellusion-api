@@ -2,7 +2,7 @@ import { HttpError } from "routing-controllers";
 import { ProjectDto } from "../DTOs/project.dto";
 import { db } from "../models";
 import * as fs from "fs";
-import path = require("path");
+import * as path from "path";
 import * as pdfParse from "pdf-parse";
 import OpenAI from "openai";
 
