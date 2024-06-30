@@ -25,9 +25,9 @@ const sceneResolvers = {
       }
     },
 
-    updateSceneMutation: async (_, args) => {
+    updateScenesMutation: async (_, args) => {
       try {
-        return sceneService.updateScene(args.id, args.scene)
+        return sceneService.updateScenes(args.projectId, args.scenes)
       } catch (e) {
         throw new Error(`Failed to update scene: ${e.message}`);
       }

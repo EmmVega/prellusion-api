@@ -55,20 +55,25 @@ class SceneService {
       }
    }
 
-   public async updateScene(id: number, scene: SceneDto) {
+   public async updateScenes(projectId: number, sceneUpdates: SceneDto[]) {
       try {
-         await db.Scene.update(scene, {
-            where: {
-               id,
-            },
-         });
-         const updatedScene = await db.Scene.findByPk(id);
-         if (!updatedScene) {
-            throw new HttpError(404, "Scene not found");
-         }
-
-         const updatedSceneDataValues = updatedScene.get();
-         return updatedSceneDataValues;
+         const updatepromises = sceneUpdates.map(async (scene: SceneDto) => {
+            const {id, ...updateData} = scene;
+            await db.Scene.update(updateData, {
+               where: {
+                  id,
+                  projectId
+               }
+            })
+            const updatedScene = await db.Scene.findByPk(id);
+            if (!updatedScene) {
+               throw new HttpError(404, "Scene not found");
+            }
+            const updatedSceneDataValues = updatedScene.get();
+            return updatedSceneDataValues;
+         })
+         const updatedScenes = await Promise.all(updatepromises);
+         return updatedScenes
       } catch (e) {
          console.log("ERROR: ", e);
          throw e;

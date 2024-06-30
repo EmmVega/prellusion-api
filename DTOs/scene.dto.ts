@@ -8,6 +8,10 @@ import { Transitions } from "../enums/Transitions";
 export class SceneDto {
    @Type(() => Number)
    @IsNumber()
+   public id: number;
+
+   @Type(() => Number)
+   @IsNumber()
    public number: number;
 
    @Type(() => Number)
