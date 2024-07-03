@@ -14,12 +14,12 @@ const sceneResolvers = {
     }
   },
   Mutation: {
-    createSceneMutation: async (_, args) => {
+    createScenesMutation: async (_, args) => {
       try {
         // Assuming Sequelize or another ORM is used, create a new Scene
-        const newScene = sceneService.createScene(args.scene)
+        const newScenes = sceneService.createScenes(args.projectId, args.scenes)
 
-        return newScene;
+        return newScenes;
       } catch (error) {
         throw new Error(`Failed to create scene: ${error.message}`);
       }

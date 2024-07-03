@@ -4,8 +4,9 @@
         "experimentalDecorators": true,
         "sourceMap": true,
         "sourceRoot": "./src",
-        "resolveJsonModule": true,
         "target": "es2020",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "moduleResolution": "NodeNext",
+        "module": "NodeNext"
     }
 }

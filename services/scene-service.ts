@@ -3,12 +3,19 @@ import { SceneDto } from "../DTOs/scene.dto";
 import { db } from "../models";
 
 class SceneService {
-   public async createScene(scene: SceneDto) {
+   public async createScenes(projectId: number, scenes: SceneDto[]) {
       try {
-         const response = await db.Scene.create(scene);
-         return response.dataValues;
+         const existingProject = await db.Project.findByPk(projectId)
+
+         if(!existingProject) {
+            throw new HttpError(404, "Project not found");
+         }
+
+         const response = await db.Scene.bulkCreate(scenes);
+         return response.map((scene) => scene.get());;
       } catch (e) {
          console.log("ERROR: ", e);
+         throw e;
       }
    }
 

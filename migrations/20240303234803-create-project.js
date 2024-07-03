@@ -21,6 +21,9 @@ module.exports = {
          sceneIds: {
             type: Sequelize.ARRAY(Sequelize.INTEGER),
          },
+         fileId: {
+            type: Sequelize.STRING,
+         },
          createdAt: {
             allowNull: false,
             type: Sequelize.DATE,

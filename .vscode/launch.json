@@ -15,6 +15,9 @@
             "sourceMaps": true,
             "sourceMapPathOverrides": {
                 "webpack:///./src/*": "${workspaceFolder}/src/*"
+            },
+            "env": {
+                "OPENAI_API_KEY": "your_api_key_here" // find a way to correctly add API KEY (already set in zsh)
             }
         }
     ]
