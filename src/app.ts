@@ -1,13 +1,7 @@
-// this shim is required
-import { getMetadataArgsStorage, useExpressServer } from "routing-controllers";
-import { routingControllersToSpec } from "routing-controllers-openapi";
-import * as swaggerUi from "swagger-ui-express";
-import * as express from "express";
+
 import concectDB from "../db";
 import { GlobalErrorHandler } from "../middlewares/Error-middleware";
 import { CorsMiddleware } from "../middlewares/cors-middleware";
-import { createHandler } from "graphql-http/lib/use/express";
-import { schema, root } from "../graphql/schemas";
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { resolvers } from "../graphql/resolvers";
