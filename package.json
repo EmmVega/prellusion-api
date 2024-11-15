@@ -9,6 +9,7 @@
     "migrate": "npx sequelize-cli db:migrate",
     "undo": "npx sequelize-cli db:migrate:undo",
     "build": "tsc",
+    "deleteDb": "npx sequelize-cli db:migrate:undo:all",
     "resetDb": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate"
   },
   "author": "EmmVega",

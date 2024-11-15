@@ -12,6 +12,10 @@ export class SceneDto {
 
    @Type(() => Number)
    @IsNumber()
+   public projectId: number;
+
+   @Type(() => Number)
+   @IsNumber()
    public number: number;
 
    @Type(() => Number)

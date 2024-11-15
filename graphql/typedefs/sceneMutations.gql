@@ -5,3 +5,7 @@ type Mutation {
 type Mutation {
    updateScenesMutation(projectId: Int! scenes: [SceneUpdateInput!]): [Scene]
 }
+
+type Mutation {
+  deleteScenesMutation(projectId: Int! sceneIds: [Int!]): [Scene] 
+}

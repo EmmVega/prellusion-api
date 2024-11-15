@@ -32,6 +32,14 @@ const sceneResolvers = {
         throw new Error(`Failed to update scene: ${e.message}`);
       }
     },
+
+    deleteScenesMutation: async (_, args) => {
+      try {
+        return sceneService.deleteScenes(args.projectId, args.sceneIds)
+      } catch (e) {
+        throw new Error(`Failed to delete scenes: ${e.message}`);
+      }
+    }
   }
 };
 

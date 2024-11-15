@@ -10,10 +10,7 @@ export class ProjectDto {
 
    @IsString()
    public draft: string;
-
-   @Type(() => Number)
-   public sceneIds: number[];
-
+   
    @Type(() => Number)
    public fileId: number;
 }

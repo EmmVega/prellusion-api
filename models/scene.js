@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Scene.init({
-    sceneNumber: DataTypes.INTEGER,
+    number: DataTypes.INTEGER,
+    projectId: DataTypes.INTEGER,
     space: DataTypes.STRING,
     place: DataTypes.STRING,
     time: DataTypes.STRING,

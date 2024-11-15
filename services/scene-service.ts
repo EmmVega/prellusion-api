@@ -87,18 +87,27 @@ class SceneService {
       }
    }
 
-   public async deleteScene(id: number) {
+   public async deleteScenes(projectId: number, sceneIds: number[]) {
       try {
-         const deletedScene = await db.Scene.findByPk(id);
-         if (!deletedScene) {
-            throw new HttpError(404, "Scene not found");
+         const project = await db.Project.findByPk(projectId);
+         if (!project) {
+            throw new HttpError(404, "Project not found");
          }
-         await db.Scene.destroy({
-            where: {
-               id,
-            },
-         });
-         return deletedScene;
+
+         const deletePromises = sceneIds.map(async (sceneId: Number) => {
+            const scene = await db.Scene.findByPk(sceneId);
+            if (!scene) {
+               throw new HttpError(404, "Scene not found");
+            }
+            await db.Scene.destroy({
+               where: {
+                  id: sceneId,
+               },
+            });
+         })
+         await Promise.all(deletePromises)
+         return this.getScenesByProjectId(projectId);
+         
       } catch (e) {
          console.log("ERROR: ", e);
          throw e;

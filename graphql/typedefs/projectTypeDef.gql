@@ -3,7 +3,6 @@ type Project {
     userId: Int!
     name: String!
     draft: String!
-    sceneIds: [String!]
     fileId: String
 }
 
@@ -11,6 +10,5 @@ input CreateProjectInput {
     userId: Int!
     name: String!
     draft: String!
-    sceneIds: [String!]
     fileId: String
 }
