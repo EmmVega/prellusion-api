@@ -24,7 +24,6 @@ input SceneInput {
 
 input SceneUpdateInput {
     id: Int!
-    projectId: Int!
     number: Int!
     space: String!
     place: String!

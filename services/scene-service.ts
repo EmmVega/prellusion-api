@@ -10,9 +10,9 @@ class SceneService {
          if(!existingProject) {
             throw new HttpError(404, "Project not found");
          }
-
-         const response = await db.Scene.bulkCreate(scenes);
-         return response.map((scene) => scene.get());;
+         const scenesWithProjectId = scenes.map(scene => ({...scene, projectId}))
+         const response = await db.Scene.bulkCreate(scenesWithProjectId);
+         return response.map((scene) => scene.get());
       } catch (e) {
          console.log("ERROR: ", e);
          throw e;

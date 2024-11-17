@@ -1,9 +1,11 @@
 import { Type } from "class-transformer";
-import { IsNumber, IsString, IsBoolean, IsIn, IsEnum } from "class-validator";
+import { IsNumber, IsString, IsBoolean, IsIn, IsEnum, isNumber, ArrayMinSize, arrayMaxSize, ValidateNested, IsArray } from "class-validator";
 import { Shots } from "../enums/Shots";
 import { Movements } from "../enums/Movements";
 import { Angulations } from "../enums/Angulations";
 import { Transitions } from "../enums/Transitions";
+import { Times } from "../enums/Times";
+import { Spaces } from "../enums/Spaces";
 
 export class SceneDto {
    @Type(() => Number)
@@ -13,60 +15,42 @@ export class SceneDto {
    @Type(() => Number)
    @IsNumber()
    public projectId: number;
-
+   
    @Type(() => Number)
    @IsNumber()
    public number: number;
 
-   @Type(() => Number)
-   @IsNumber()
-   public shotNumber: number;
-
-   @IsString()
-   @IsEnum(Shots, {
-      message: `Invalid shot. Valid shots are: ${Object.values(Shots).join(
+   @Type(() => String)
+   @IsEnum(Spaces, {
+      message: `Invalid spaces. Valid Spaces are: ${Object.values(Spaces).join(
          ", "
       )}`,
    })
-   public shot: string;
+   public space: string;
 
-   @IsString()
-   @IsEnum(Object.values(Movements), {
-      message: `Invalid movement. Valid movements are: ${Object.values(
-         Movements
-      ).join(", ")}`,
+   @Type(() => String)
+   public place: string;
+
+   @Type(() => String)
+   @IsEnum(Times, {
+      message: `Invalid time. Valid Times are: ${Object.values(Times).join(
+         ", "
+      )}`,
    })
-   public movement: string;
+   public time: string;
 
-   @IsString()
-   @IsEnum(Object.values(Angulations), {
-      message: `Invalid angulation. Valid Angulations are: ${Object.values(
-         Angulations
-      ).join(", ")}`,
-   })
-   public angulation: string;
-
-   @IsString()
-   public action: string;
+   @Type(() => String)
+   public description: string;
 
    @IsBoolean()
    public dialogue: boolean;
 
-   @IsBoolean()
-   public sound: boolean;
-
-   @IsString()
-   @IsEnum(Object.values(Transitions), {
-      message: `Invalid transition. Valid transitions are: ${Object.values(
-         Transitions
-      ).join(", ")}`,
-   })
-   public transition: string;
-
-   @IsString()
-   public notes: string;
-
    @Type(() => Number)
    @IsNumber()
    public script: number;
+   
+   @IsArray()
+   @ValidateNested({ each: true }) // Validate each element in the array
+   @Type(() => Number) // Transform each element into a number
+   public talent: number[];
 }

@@ -1,3 +1,4 @@
+import { SceneDto } from "../../DTOs/scene.dto";
 import SceneService from "../../services/scene-service";
 
 const sceneService = new SceneService()
@@ -27,7 +28,8 @@ const sceneResolvers = {
 
     updateScenesMutation: async (_, args) => {
       try {
-        return sceneService.updateScenes(args.projectId, args.scenes)
+        const scenesWithProjectId: SceneDto[] = args.scenes.map(scene => ({...scene, projectId: args.projectId}))
+        return sceneService.updateScenes(args.projectId, scenesWithProjectId)
       } catch (e) {
         throw new Error(`Failed to update scene: ${e.message}`);
       }
