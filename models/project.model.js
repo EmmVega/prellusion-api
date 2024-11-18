@@ -8,9 +8,8 @@ module.exports = (sequelize, DataTypes) => {
        * The `models/index` file will call this method automatically.
        */
       static associate(models) {
-         // define association here
-         // Project.belongsTo(models.User, { foreignKey: "id" });
-      }
+         Project.hasMany(models.Scene, { foreignKey: "projectId" }); // Correct inverse association
+      }      
    }
    Project.init(
       {

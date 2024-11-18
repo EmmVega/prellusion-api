@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Scene.belongsTo(models.Project, { foreignKey: "id"})
+      Scene.belongsTo(models.Project, { foreignKey: "projectId" }); // Correct foreign key
     }
   }
   Scene.init({
