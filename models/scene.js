@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Scene.belongsTo(models.Project, { foreignKey: "projectId" }); // Correct foreign key
+      Scene.hasMany(models.Shot, { foreignKey: 'sceneId' })
     }
   }
   Scene.init({

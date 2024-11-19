@@ -1,0 +1,45 @@
+type Shot {
+    id: Int!
+    SceneId: Int!,   
+    number: Int!,
+    shotNumber: Int!,
+    shot: String!
+    movement: String!,
+    angulation: String!,
+    action: String,
+    dialogue: Boolean,
+    sound: Boolean,
+    transition: String,
+    notes: String,
+    script: Int!,
+}
+
+type ShotInput {
+    SceneId: Int!,   
+    number: Int!,
+    shotNumber: Int!,
+    shot: String!
+    movement: String!,
+    angulation: String!,
+    action: String,
+    dialogue: Boolean,
+    sound: Boolean,
+    transition: String,
+    notes: String,
+    script: Int!,
+}
+
+type ShotUpdateInput {
+    id: Int!
+    number: Int!,
+    shotNumber: Int!,
+    shot: String!
+    movement: String!,
+    angulation: String!,
+    action: String,
+    dialogue: Boolean,
+    sound: Boolean,
+    transition: String,
+    notes: String,
+    script: Int!,
+}

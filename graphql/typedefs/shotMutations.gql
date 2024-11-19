@@ -1,0 +1,11 @@
+type Mutation {
+    createShotsMutation(projectId: Int! shots: [Shot]): [Shot]
+}
+
+type Mutation {
+    updateShotsMutation(sceneId: Int! shots: [ShotInput]): [Shot]
+}
+
+type Mutation {
+    deleteShotsMutation(sceneId: Int! shotIds: [Int!]): [Shot]
+}
