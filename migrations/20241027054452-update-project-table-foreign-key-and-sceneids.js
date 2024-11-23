@@ -4,7 +4,6 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('Projects', 'sceneIds');
     await queryInterface.removeColumn('Scenes', 'sceneNumber');
     await queryInterface.addColumn('Scenes', 'number', {
       type: Sequelize.INTEGER,

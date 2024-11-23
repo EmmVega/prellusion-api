@@ -1,5 +1,5 @@
 type Mutation {
-    createShotsMutation(projectId: Int! shots: [Shot]): [Shot]
+    createShotsMutation(sceneId: Int! shots: [ShotInput]): [Shot]
 }
 
 type Mutation {

@@ -28,7 +28,11 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.addColumn('Shots', 'projectId');
+    await queryInterface.addColumn('Shots', 'projectId', {      
+      type: Sequelize.INTEGER,
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL', // adjust based on your requirements});
+    })
     await queryInterface.removeColumn('Shots', 'sceneId')
   }
 };

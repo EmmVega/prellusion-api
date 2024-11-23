@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
          transition: DataTypes.STRING,
          notes: DataTypes.STRING,
          script: DataTypes.NUMBER,
-         projectId: DataTypes.NUMBER,
+         sceneId: DataTypes.NUMBER,
       },
       {
          sequelize,

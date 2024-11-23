@@ -1,6 +1,6 @@
 type Shot {
     id: Int!
-    SceneId: Int!,   
+    sceneId: Int!,   
     number: Int!,
     shotNumber: Int!,
     shot: String!
@@ -14,8 +14,8 @@ type Shot {
     script: Int!,
 }
 
-type ShotInput {
-    SceneId: Int!,   
+input ShotInput {
+    sceneId: Int!,   
     number: Int!,
     shotNumber: Int!,
     shot: String!
