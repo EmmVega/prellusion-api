@@ -192,7 +192,27 @@ class ProjectService {
       }
    }
 
-   // Add more methods as needed...
+   public async getProjectShots(projectId: number) {
+      try {
+         const projectWithShots = await db.Project.findOne({
+            where: {
+               id: projectId,
+            },
+            include: {
+               model: db.Scene,
+               include: {
+                  model: db.Shot,
+               }
+            }
+         })
+
+         const shots = projectWithShots.Scenes.flatMap(scene => scene.Shots) || [];
+         return shots;
+      } catch (e) {
+         console.log("ERROR: ", e);
+         throw e;
+      }
+   }
 }
 
 export default ProjectService;
