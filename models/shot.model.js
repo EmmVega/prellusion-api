@@ -16,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
    Shot.init(
       {
          number: DataTypes.NUMBER,
-         shotNumber: DataTypes.NUMBER,
          shot: DataTypes.STRING,
          movement: DataTypes.STRING,
          angulation: DataTypes.STRING,
