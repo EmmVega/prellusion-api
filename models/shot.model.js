@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
          movement: DataTypes.STRING,
          angulation: DataTypes.STRING,
          action: DataTypes.STRING,
-         dialogue: DataTypes.BOOLEAN,
+         dialogue: DataTypes.STRING,
          sound: DataTypes.BOOLEAN,
          transition: DataTypes.STRING,
          notes: DataTypes.STRING,
