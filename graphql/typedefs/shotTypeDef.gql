@@ -1,7 +1,7 @@
 type Shot {
     id: Int!
     sceneId: Int!,   
-    number: Int!,
+    number: String!,
     shot: String!
     movement: String!,
     angulation: String!,
@@ -15,7 +15,7 @@ type Shot {
 
 input ShotInput {
     sceneId: Int!,   
-    number: Int!,
+    number: String!,
     shot: String!
     movement: String!,
     angulation: String!,
@@ -29,7 +29,7 @@ input ShotInput {
 
 type ShotUpdateInput {
     id: Int!
-    number: Int!,
+    number: String!,
     shot: String!
     movement: String!,
     angulation: String!,
