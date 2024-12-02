@@ -16,15 +16,15 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
-    await queryInterface.changeColumn('Shots', 'dialogue', {
-      type: Sequelize.BOOLEAN,
-      allowNull: true
-    })
+    // Convert column 'dialogue' from STRING to BOOLEAN
+    await queryInterface.sequelize.query(`
+      ALTER TABLE "Shots"
+      ALTER COLUMN "dialogue" TYPE BOOLEAN USING 
+        CASE 
+          WHEN "dialogue" = 'true' THEN true
+          WHEN "dialogue" = 'false' THEN false
+          ELSE NULL
+        END
+    `);
   }
 };

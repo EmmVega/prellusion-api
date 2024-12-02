@@ -1,11 +1,13 @@
 import { Type } from "class-transformer";
-import { IsNumber, IsString, IsBoolean, IsIn, IsEnum, isNumber, ArrayMinSize, arrayMaxSize, ValidateNested, IsArray } from "class-validator";
-import { Shots } from "../enums/Shots";
-import { Movements } from "../enums/Movements";
-import { Angulations } from "../enums/Angulations";
-import { Transitions } from "../enums/Transitions";
-import { Times } from "../enums/Times";
-import { Spaces } from "../enums/Spaces";
+import {
+   IsNumber,
+   IsBoolean,
+   IsEnum,
+   IsArray,
+   ValidateNested
+} from "class-validator";
+import { Times } from "../enums/Times.js";
+import { Spaces } from "../enums/Spaces.js";
 
 export class SceneDto {
    @Type(() => Number)
@@ -15,7 +17,7 @@ export class SceneDto {
    @Type(() => Number)
    @IsNumber()
    public projectId: number;
-   
+
    @Type(() => Number)
    @IsNumber()
    public number: number;
@@ -48,7 +50,7 @@ export class SceneDto {
    @Type(() => Number)
    @IsNumber()
    public script: number;
-   
+
    @IsArray()
    @ValidateNested({ each: true }) // Validate each element in the array
    @Type(() => Number) // Transform each element into a number

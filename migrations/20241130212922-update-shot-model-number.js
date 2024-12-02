@@ -16,15 +16,10 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
-    await queryInterface.changeColumn('Shots', 'number', {
-      type: Sequelize.NUMBER,
-      allowNull: false
-    })
+    // Step 1: Revert the column type from STRING back to INTEGER or NUMBER
+    await queryInterface.sequelize.query(`
+      ALTER TABLE "Shots"
+      ALTER COLUMN "number" TYPE INTEGER USING "number"::INTEGER
+    `);
   }
 };

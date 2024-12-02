@@ -1,9 +1,9 @@
 import { HttpError } from "routing-controllers";
-import { ProjectDto } from "../DTOs/project.dto";
-import { db } from "../models";
+import { ProjectDto } from "../DTOs/project.dto.js";
+import { db } from "../models/index.js";
 import * as fs from "fs";
 import * as path from "path";
-import * as pdfParse from "pdf-parse";
+import PdfParse from "pdf-parse/lib/pdf-parse.js";
 import OpenAI from "openai";
 
 class ProjectService {
@@ -61,7 +61,7 @@ class ProjectService {
 
       try {
          // Read the PDF file
-         const pdfContent = await pdfParse(fs.readFileSync(pdfPath)).then(
+         const pdfContent = await PdfParse(fs.readFileSync(pdfPath)).then(
             (data) => {
                return data;
                // console.log("data: ", data.text);

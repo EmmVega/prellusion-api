@@ -1,4 +1,4 @@
-import ProjectService from "../../services/project-service"
+import ProjectService from "../../services/project-service.js"
 
 
 const projectService = new ProjectService()

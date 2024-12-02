@@ -1,12 +1,11 @@
 {
-    "compilerOptions": {    
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "sourceMap": true,
-        "sourceRoot": "./src",
-        "target": "es2020",
-        "esModuleInterop": true,
+    "compilerOptions": {
+        "module": "NodeNext", // or "NodeNext"
         "moduleResolution": "NodeNext",
-        "module": "NodeNext"
+        "target": "ES2020",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": false,
+        "experimentalDecorators": true,
     }
 }

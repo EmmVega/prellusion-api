@@ -1,4 +1,4 @@
-import { shotService } from "../../services/shot-service";
+import { shotService } from "../../services/shot-service.js";
 
 const shotResolvers = {
     Query: {

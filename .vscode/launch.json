@@ -9,6 +9,10 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
+            "runtimeArgs": [
+                "--loader",
+                "ts-node/esm"
+            ],
             "args": [
                 "${workspaceFolder}/src/server.ts"
             ],
@@ -17,8 +21,9 @@
                 "webpack:///./src/*": "${workspaceFolder}/src/*"
             },
             "env": {
+                "NODE_ENV": "test",
                 "OPENAI_API_KEY": "your_api_key_here" // find a way to correctly add API KEY (already set in zsh)
             }
         }
     ]
-  }
+}

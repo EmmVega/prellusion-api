@@ -1,17 +1,17 @@
 
-import concectDB from "../db";
-import { GlobalErrorHandler } from "../middlewares/Error-middleware";
-import { CorsMiddleware } from "../middlewares/cors-middleware";
+import concectDB from "../db/index.js";
+// import { GlobalErrorHandler } from "../middlewares/Error-middleware";
+// import { CorsMiddleware } from "../middlewares/cors-middleware";
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { resolvers } from "../graphql/resolvers";
-import typeDefs from "../graphql/typedefs";
+import { resolvers } from "../graphql/resolvers/index.js";
+import typeDefs from "../graphql/typedefs/index.js";
 
 class App {
    public server
    // public app: express.Application;
    public env: string;
-   public port:  number;
+   public port: number;
 
    constructor() {
       // this.app = express();
@@ -33,7 +33,7 @@ class App {
       const { url } = await startStandaloneServer(this.server, {
          listen: { port: this.port },
       });
-      
+
       console.log(`🚀  Server ready at: ${url}`);
    }
 
@@ -48,7 +48,7 @@ class App {
          typeDefs,
          resolvers,
       });
-    }
+   }
 }
 
 export default App;

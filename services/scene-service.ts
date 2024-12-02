@@ -1,16 +1,16 @@
 import { HttpError } from "routing-controllers";
-import { SceneDto } from "../DTOs/scene.dto";
-import { db } from "../models";
+import { SceneDto } from "../DTOs/scene.dto.js";
+import { db } from "../models/index.js";
 
 class SceneService {
    public async createScenes(projectId: number, scenes: SceneDto[]) {
       try {
          const existingProject = await db.Project.findByPk(projectId)
 
-         if(!existingProject) {
+         if (!existingProject) {
             throw new HttpError(404, "Project not found");
          }
-         const scenesWithProjectId = scenes.map(scene => ({...scene, projectId}))
+         const scenesWithProjectId = scenes.map(scene => ({ ...scene, projectId }))
          const response = await db.Scene.bulkCreate(scenesWithProjectId);
          return response.map((scene) => scene.get());
       } catch (e) {
@@ -65,7 +65,7 @@ class SceneService {
    public async updateScenes(projectId: number, sceneUpdates: SceneDto[]) {
       try {
          const updatepromises = sceneUpdates.map(async (scene: SceneDto) => {
-            const {id, ...updateData} = scene;
+            const { id, ...updateData } = scene;
             await db.Scene.update(updateData, {
                where: {
                   id,
@@ -107,7 +107,7 @@ class SceneService {
          })
          await Promise.all(deletePromises)
          return this.getScenesByProjectId(projectId);
-         
+
       } catch (e) {
          console.log("ERROR: ", e);
          throw e;
