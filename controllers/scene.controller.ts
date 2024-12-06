@@ -9,9 +9,9 @@ import {
    Delete,
 } from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
-import { SceneDto } from "../DTOs/scene.dto";
-import SceneService from "../services/scene-service";
-import * as requestExamples from "../models/examples/sceneModel.json";
+import { SceneDto } from "../DTOs/scene.dto.js";
+import SceneService from "../services/scene-service.js";
+import requestExamples from "../models/examples/sceneModel.json" assert { type: "json" };
 
 @JsonController()
 export class SceneController {
@@ -39,63 +39,64 @@ export class SceneController {
       }
    }
 
-   @Post("/scenes")
-   @OpenAPI({
-      summary: "To post/create a new scene",
-      requestBody: {
-         content: {
-            "application/json": {
-               example: requestExamples.postScene,
-            },
-         },
-      },
-   })
-   async post(
-      @Body({ validate: true })
-      scene: SceneDto
-   ) {
-      try {
-         return await this.sceneService.createScene(scene);
-      } catch (e) {
-         console.log("ERROR: ", e);
-         throw e;
-      }
-   }
+   // OMITING REST SCENE SERVICES
+   //    @Post("/scenes")
+   //    @OpenAPI({
+   //       summary: "To post/create a new scene",
+   //       requestBody: {
+   //          content: {
+   //             "application/json": {
+   //                example: requestExamples.postScene,
+   //             },
+   //          },
+   //       },
+   //    })
+   //    async post(
+   //       @Body({ validate: true })
+   //       scene: SceneDto
+   //    ) {
+   //       try {
+   //          return await this.sceneService.createScenes(projectId, scenes);
+   //       } catch (e) {
+   //          console.log("ERROR: ", e);
+   //          throw e;
+   //       }
+   //    }
 
-   @Patch("/scenes/:id")
-   @OpenAPI({
-      summary: "To update a scene by id",
-      requestBody: {
-         content: {
-            "application/json": {
-               example: requestExamples.patchScene,
-            },
-         },
-      },
-   })
-   async patchById(
-      @Param("id") id: number,
-      @Body({ validate: true })
-      scene: SceneDto
-   ) {
-      try {
-         return await this.sceneService.updateScene(id, scene);
-      } catch (e) {
-         console.log("ERROR: ", e);
-         throw e;
-      }
-   }
+   //    @Patch("/scenes/:id")
+   //    @OpenAPI({
+   //       summary: "To update a scene by id",
+   //       requestBody: {
+   //          content: {
+   //             "application/json": {
+   //                example: requestExamples.patchScene,
+   //             },
+   //          },
+   //       },
+   //    })
+   //    async patchById(
+   //       @Param("id") id: number,
+   //       @Body({ validate: true })
+   //       scene: SceneDto
+   //    ) {
+   //       try {
+   //          return await this.sceneService.updateScene(id, scene);
+   //       } catch (e) {
+   //          console.log("ERROR: ", e);
+   //          throw e;
+   //       }
+   //    }
 
-   @Delete("/scenes/:id")
-   @OpenAPI({
-      summary: "To delete a scene by id",
-   })
-   async deleteById(@Param("id") id: number) {
-      try {
-         return await this.sceneService.deleteScene(id);
-      } catch (e) {
-         console.log("ERROR: ", e);
-         throw e;
-      }
-   }
+   //    @Delete("/scenes/:id")
+   //    @OpenAPI({
+   //       summary: "To delete a scene by id",
+   //    })
+   //    async deleteById(@Param("id") id: number) {
+   //       try {
+   //          return await this.sceneService.deleteScene(id);
+   //       } catch (e) {
+   //          console.log("ERROR: ", e);
+   //          throw e;
+   //       }
+   //    }
 }

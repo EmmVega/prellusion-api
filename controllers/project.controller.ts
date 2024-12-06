@@ -10,10 +10,10 @@ import {
    UseBefore,
 } from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
-import { ProjectDto } from "../DTOs/project.dto";
-import ProjectService from "../services/project-service";
-import * as requestExamples from "../models/examples/projectModel.json";
-import { fileUpload } from "../middlewares/scriptProject-middleware";
+import { ProjectDto } from "../DTOs/project.dto.js";
+import ProjectService from "../services/project-service.js";
+import requestExamples from "../models/examples/projectModel.json" assert { type: "json" };
+import { fileUpload } from "../middlewares/scriptProject-middleware.js";
 
 @JsonController()
 export class ProjectController {

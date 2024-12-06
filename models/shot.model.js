@@ -21,7 +21,7 @@ export default (sequelize, DataTypes) => {
          angulation: DataTypes.STRING,
          action: DataTypes.STRING,
          dialogue: DataTypes.STRING,
-         sound: DataTypes.BOOLEAN,
+         sound: DataTypes.STRING,
          transition: DataTypes.STRING,
          notes: DataTypes.STRING,
          script: DataTypes.NUMBER,

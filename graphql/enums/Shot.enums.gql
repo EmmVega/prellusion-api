@@ -55,3 +55,11 @@ enum Shots {
    ExtremeLongShot
    PointOfView
 }
+
+enum Sounds {
+   Environment,
+   dialogue,
+   Music,
+   Effects,
+   Mute,
+}

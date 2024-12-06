@@ -9,5 +9,5 @@ API: INCLUÍR TALENTO POR ESCENA
 }
 
 SCENE y SHOT deben ser modelos distintos
--renombrar todo Scene a Shot
+-MODO OSCURO
 -crear Scene basado en JSON de scriptParser 

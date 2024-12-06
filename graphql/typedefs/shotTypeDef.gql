@@ -2,13 +2,13 @@ type Shot {
     id: Int!
     sceneId: Int!,   
     number: String!,
-    shot: String!
-    movement: String!,
-    angulation: String!,
+    shot: Shots!
+    movement: Movements!,
+    angulation: Angulations!,
     action: String,
     dialogue: String,
-    sound: Boolean,
-    transition: String,
+    sound: Sounds!,
+    transition: Transitions,
     notes: String,
     script: Int!,
 }
@@ -16,13 +16,13 @@ type Shot {
 input ShotInput {
     sceneId: Int!,   
     number: String!,
-    shot: String!
-    movement: String!,
-    angulation: String!,
+    shot: Shots!
+    movement: Movements!,
+    angulation: Angulations!,
     action: String,
     dialogue: String,
-    sound: Boolean,
-    transition: String,
+    sound: Sounds!,
+    transition: Transitions!,
     notes: String,
     script: Int!,
 }
@@ -30,13 +30,13 @@ input ShotInput {
 type ShotUpdateInput {
     id: Int!
     number: String!,
-    shot: String!
-    movement: String!,
-    angulation: String!,
+    shot: Shots!
+    movement: Movements!,
+    angulation: Angulations!,
     action: String,
     dialogue: String,
-    sound: Boolean,
-    transition: String,
+    sound: Sounds!,
+    transition: Transitions!,
     notes: String,
     script: Int!,
 }
