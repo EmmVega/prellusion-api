@@ -19,7 +19,7 @@ export default (sequelize, DataTypes) => {
     place: DataTypes.STRING,
     time: DataTypes.STRING,
     description: DataTypes.STRING,
-    dialog: DataTypes.STRING,
+    dialogue: DataTypes.STRING,
     script: DataTypes.INTEGER,
     talent: DataTypes.ARRAY(DataTypes.INTEGER)
   }, {

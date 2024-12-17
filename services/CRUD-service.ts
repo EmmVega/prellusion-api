@@ -22,7 +22,7 @@ export class CRUDService<T extends Model> implements ICRUD {
     }
 
 
-    private async isExistingParent (parentId: number): Promise<T> {
+    private async isExistingParent(parentId: number): Promise<T> {
         try {
             return await this.parentDbModel.findByPk(parentId)
         } catch (e) {
@@ -32,8 +32,8 @@ export class CRUDService<T extends Model> implements ICRUD {
     }
 
     public async bulkCreate(parentId: number, items: any[]): Promise<T[]> {
-        try {            
-            if(!this.isExistingParent(parentId)) {
+        try {
+            if (!this.isExistingParent(parentId)) {
                 throw new HttpError(404, `${this.parentName} not found`);
             }
 
@@ -52,7 +52,7 @@ export class CRUDService<T extends Model> implements ICRUD {
                     [foreignKey]: parentId
                 }
             })
-             const itemDataValues = items.map(scene => scene.get());
+            const itemDataValues = items.map(scene => scene.get());
             return itemDataValues
         } catch (e) {
             console.log("ERROR: ", e);
@@ -60,11 +60,11 @@ export class CRUDService<T extends Model> implements ICRUD {
         }
     }
 
-    public async update() {}
+    public async update() { }
 
     public async deleteAll(parentId: number, itemIds: any[]): Promise<T[]> {
         try {
-            if(!this.isExistingParent(parentId)) {
+            if (!this.isExistingParent(parentId)) {
                 throw new HttpError(404, `${this.parentName} not found`);
             }
 
@@ -74,7 +74,7 @@ export class CRUDService<T extends Model> implements ICRUD {
                     throw new HttpError(404, `${this.entityName} not found`)
                 }
                 await this.dbModel.destroy({
-                    where: {id: itemId}  
+                    where: { id: itemId }
                 })
             })
 

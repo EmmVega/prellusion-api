@@ -5,52 +5,38 @@ import * as fs from "fs";
 import * as path from "path";
 import PdfParse from "pdf-parse/lib/pdf-parse.js";
 import OpenAI from "openai";
+import { CRUDService } from "./CRUD-service.js";
 
-class ProjectService {
+class ProjectService extends CRUDService<typeof db.Project> {
+   constructor() {
+      // Call the constructor of CRUDService with appropriate values for Project
+      super('Project', db.Project, 'User', db.User);  // 'User' and 'User' are just examples for your parent entity
+   }
    public openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
    public async createProject(project: ProjectDto) {
-      try {
-         // save the file to gcp
-
-         // save and add the id to the project
-
-         // save the project to the db
-
-         // pdfParse the file and generate the scenes from the response
-
-         // save the scenes to the db
-
-         // return the project
-         const response = await db.Project.create(project);
-         return response.dataValues;
-      } catch (e) {
-         console.log("ERROR: ", e);
-      }
-   }
-
-   public async getAllProjects() {
-      try {
-         const projects = await db.Project.findAll();
-         const projectsDataValues = projects.map((project) => project.get());
-         return projectsDataValues;
-      } catch (e) {
-         console.log("ERROR: ", e);
-         throw e;
-      }
+      // save the file to gcp
+      // save and add the id to the project
+      // save the project to the db
+      // pdfParse the file and generate the scenes from the response
+      // save the scenes to the db
+      // return the project
+      const response = await db.Project.create(project);
+      return response.dataValues;
    }
 
    public async getProjectById(id: number) {
-      try {
-         const project = await db.Project.findByPk(id);
-         if (!project) {
-            throw new HttpError(404, "Project not found");
-         }
-         const projectDataValues = project.get();
-         return projectDataValues;
-      } catch (e) {
-         console.log("ERROR: ", e);
-         throw e;
+      const project = await db.Project.findByPk(id);
+      if (!project) {
+         throw new HttpError(404, "Project not found");
       }
+      const projectDataValues = project.get();
+      return projectDataValues;
+   }
+
+   public async getAllProjects() {
+      const projects = await db.Project.findAll();
+      const projectsDataValues = projects.map((project) => project.get());
+      return projectsDataValues;
    }
 
    public async scriptParser() {
@@ -193,26 +179,41 @@ class ProjectService {
    }
 
    public async getProjectShots(projectId: number) {
-      try {
-         const projectWithShots = await db.Project.findOne({
-            where: {
-               id: projectId,
-            },
+      const projectWithShots = await db.Project.findOne({
+         where: {
+            id: projectId,
+         },
+         include: {
+            model: db.Scene,
             include: {
-               model: db.Scene,
-               include: {
-                  model: db.Shot,
-               }
+               model: db.Shot,
             }
-         })
+         }
+      });
 
-         const shots = projectWithShots.Scenes.flatMap(scene => scene.Shots) || [];
-         return shots;
-      } catch (e) {
-         console.log("ERROR: ", e);
-         throw e;
+      if (!projectWithShots) {
+         throw new Error(`Project with ID ${projectId} not found`);
       }
+
+      const shots = projectWithShots.Scenes.flatMap(scene => scene.Shots) || [];
+      return shots;
    }
+
+   public async deleteProjectsByIds(itemIds: number[]): Promise<any[]> {
+      const deletePromises = itemIds.map(async (itemId) => {
+         const item = await db.Project.findByPk(itemId)
+         if (!item) {
+            throw new HttpError(404, `${this.entityName} not found`)
+         }
+         await db.Project.destroy({
+            where: { id: itemId }
+         })
+      })
+      await Promise.all(deletePromises);
+      const remainingItems = await db.Project.findAll()
+      return remainingItems;
+   }
+
 }
 
 export default ProjectService;

@@ -1,13 +1,11 @@
 # prellusion-api
 # prellusion-api
 
-PENDIENTES:
+////////// TODO API 
 
-API: INCLUÍR TALENTO POR ESCENA
+add talent by scene
 {
     talent: string[name, name] 
 }
+-Create scene/shots based on json in script parser
 
-SCENE y SHOT deben ser modelos distintos
--MODO OSCURO
--crear Scene basado en JSON de scriptParser 

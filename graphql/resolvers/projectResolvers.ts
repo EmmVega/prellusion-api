@@ -1,28 +1,30 @@
-import ProjectService from "../../services/project-service.js"
+import ProjectService from "../../services/project-service.js";
 
+const projectService = new ProjectService();
 
-const projectService = new ProjectService()
+const resolverWrapper = (resolver) => async (...args) => {
+    try {
+        return await resolver(...args);
+    } catch (error) {
+        console.error("Resolver Error:", error);
+        throw new Error(error.message);
+    }
+};
 
 const projectResolvers = {
     Query: {
-        getShotsByProjectIdMutation: async (_, args) => {
-            try {
-                return projectService.getProjectShots(args.projectId)
-            } catch (e) {
-                throw new Error(`Failed to get project shots ${e.message}`)
-            }
-        }
+        getShotsByProjectIdMutation: resolverWrapper((_, args) => {
+            return projectService.getProjectShots(args.projectId);
+        })
     },
     Mutation: {
-        createProjectMutation: async (_, args) => {
-            try {
-                const newProject = await projectService.createProject(args.project);
-                return newProject
-            } catch (e) {
-                throw new Error(`Failed to create project ${e.message}`)
-            }
-        }
+        createProjectMutation: resolverWrapper((_, args) => {
+            return projectService.createProject(args.project);
+        }),
+        deleteProjectsMutation: resolverWrapper((_, args) => {
+            return projectService.deleteProjectsByIds(args.projectIds)
+        })
     }
-}
+};
 
 export default projectResolvers;

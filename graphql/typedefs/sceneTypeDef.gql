@@ -6,7 +6,7 @@ type Scene {
     place: String!
     time: String!
     description: String!
-    dialog: String!
+    dialogue: String!
     script: Int!
     talent: [Int]
 }
@@ -17,7 +17,7 @@ input SceneInput {
     place: String!
     time: String!
     description: String!
-    dialog: String!
+    dialogue: String!
     script: Int!
     talent: [Int]
 }
@@ -29,7 +29,7 @@ input SceneUpdateInput {
     place: String!
     time: String!
     description: String!
-    dialog: String!
+    dialogue: String!
     script: Int!
     talent: [Int]
 }
