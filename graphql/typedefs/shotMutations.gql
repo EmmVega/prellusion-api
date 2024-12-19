@@ -3,7 +3,7 @@ type Mutation {
 }
 
 type Mutation {
-    updateShotsMutation(sceneId: Int! shots: [ShotInput]): [Shot]
+    updateShotsMutation(shots: [ShotUpdateInput]): [Shot]
 }
 
 type Mutation {

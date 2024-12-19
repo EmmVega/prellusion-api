@@ -27,8 +27,9 @@ input ShotInput {
     script: Int!,
 }
 
-type ShotUpdateInput {
-    id: Int!
+input ShotUpdateInput {
+    id: Int!,
+    sceneId: Int!,   
     number: String!,
     shot: Shots!
     movement: Movements!,

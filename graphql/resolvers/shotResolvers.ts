@@ -15,8 +15,8 @@ const shotResolvers = {
         createShotsMutation: async (_, args) => {
             return shotService.bulkCreate(args.sceneId, args.shots)
         },
-        updateShotsMutation: async () => {
-
+        updateShotsMutation: async (_, args) => {
+            return shotService.updateItems(args.shots)
         },
         deleteShotsMutation: async (_, args) => {
             return shotService.deleteAll(args.sceneId, args.shotIds);

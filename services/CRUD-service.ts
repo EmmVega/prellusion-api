@@ -1,10 +1,10 @@
 import { HttpError } from "routing-controllers";
-import { Model, ModelStatic } from "sequelize";
+import { Model, ModelStatic, Op } from "sequelize";
 
 interface ICRUD {
     bulkCreate: (parentId: number, items: any[]) => Promise<Model[]>;
     readAll: (parentId: object) => Promise<Model[]>;
-    update: () => Promise<void>;
+    updateItems: (items: any[]) => Promise<void[]>;
     deleteAll: (parentId: number, itemIds: number[]) => Promise<Model[]>;
 }
 
@@ -60,7 +60,27 @@ export class CRUDService<T extends Model> implements ICRUD {
         }
     }
 
-    public async update() { }
+    public async updateItems(items: any[]): Promise<void[]> {
+        return await this.dbModel.sequelize.transaction(async (transaction) => {
+            const updatePromises = items.map(async (item) => {
+                const [updatedCount] = await this.dbModel.update(
+                    item,
+                    {
+                        where: {
+                            id: item.id
+                        },
+                        transaction
+                    }
+                );
+
+                if (updatedCount === 0) {
+                    throw new HttpError(404, `${this.entityName} with ID ${item.id} not found`)
+                }
+            })
+
+            return await Promise.all(updatePromises);
+        })
+    }
 
     public async deleteAll(parentId: number, itemIds: any[]): Promise<T[]> {
         try {
@@ -73,7 +93,7 @@ export class CRUDService<T extends Model> implements ICRUD {
                 if (!item) {
                     throw new HttpError(404, `${this.entityName} not found`)
                 }
-                await this.dbModel.destroy({
+                return await this.dbModel.destroy({
                     where: { id: itemId }
                 })
             })
