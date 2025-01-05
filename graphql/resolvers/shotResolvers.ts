@@ -20,6 +20,9 @@ const shotResolvers = {
         },
         deleteShotsMutation: async (_, args) => {
             return shotService.deleteAll(args.sceneId, args.shotIds);
+        },
+        patchShotsMutation: async (_, args) => {
+            return shotService.patchAll(args.sceneId, args.shots)
         }
     }
 

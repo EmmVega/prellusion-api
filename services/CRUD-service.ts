@@ -6,6 +6,7 @@ interface ICRUD {
     readAll: (parentId: object) => Promise<Model[]>;
     updateItems: (items: any[]) => Promise<void[]>;
     deleteAll: (parentId: number, itemIds: number[]) => Promise<Model[]>;
+    patchAll: (parentId: number, items: any[]) => Promise<Model[]>
 }
 
 export class CRUDService<T extends Model> implements ICRUD {
@@ -44,7 +45,7 @@ export class CRUDService<T extends Model> implements ICRUD {
         }
     }
 
-    public async readAll(parentId: any): Promise<T[]> {
+    public async readAll(parentId: any): Promise<any[]> {
         try {
             const foreignKey: any = this.parentName.toLowerCase() + 'Id'
             const items = await this.dbModel.findAll({
@@ -84,10 +85,6 @@ export class CRUDService<T extends Model> implements ICRUD {
 
     public async deleteAll(parentId: number, itemIds: any[]): Promise<T[]> {
         try {
-            if (!this.isExistingParent(parentId)) {
-                throw new HttpError(404, `${this.parentName} not found`);
-            }
-
             const deletePromises = itemIds.map(async (itemId: any) => {
                 const item = await this.dbModel.findByPk(itemId)
                 if (!item) {
@@ -106,5 +103,28 @@ export class CRUDService<T extends Model> implements ICRUD {
             throw e;
         }
     }
+    public async patchAll(parentId: number, items: any[]): Promise<T[]> {
+        const existingItems = await this.readAll(parentId)
 
+        const incomingItemMap = new Map(items.map(item => [item.id, item]))
+        const existingItemsMap = new Map(existingItems.map(item => [item.id, item]))
+
+        //determine which to create, update or delete
+        const itemsToCreate = items.filter(item => !item.id)
+        const itemsToUpdate = items.filter(item => existingItemsMap.has(item.id))
+        const itemsToDelete = existingItems.filter(item => !incomingItemMap.has(item.id))
+
+        try {
+            await Promise.all([
+                this.bulkCreate(parentId, itemsToCreate),
+                this.updateItems(itemsToUpdate),
+                this.deleteAll(parentId, itemsToDelete.map(item => item.id))
+            ])
+
+            return this.readAll(parentId)
+        } catch (e) {
+            console.log("ERROR: ", e);
+            throw e;
+        }
+    }
 }

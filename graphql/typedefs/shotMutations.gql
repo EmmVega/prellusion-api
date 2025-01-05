@@ -9,3 +9,7 @@ type Mutation {
 type Mutation {
     deleteShotsMutation(sceneId: Int! shotIds: [Int!]): [Shot]
 }
+
+type Mutation {
+    patchShotsMutation(sceneId: Int!, shots: [ShotPatchInput]): [Shot]
+}
