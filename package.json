@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^4.10.4",
+    "@google-cloud/pubsub": "^5.1.0",
     "@graphql-tools/graphql-file-loader": "^8.0.1",
     "@graphql-tools/load": "^8.0.2",
     "class-transformer": "^0.5.1",

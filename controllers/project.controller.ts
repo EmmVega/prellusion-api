@@ -8,6 +8,7 @@ import {
    Patch,
    Delete,
    UseBefore,
+   UploadedFile,
 } from "routing-controllers";
 import { OpenAPI, ResponseSchema } from "routing-controllers-openapi";
 import { ProjectDto } from "../DTOs/project.dto.js";
@@ -60,11 +61,12 @@ export class ProjectController {
    })
    async post(
       @Body({ validate: true })
-      project: ProjectDto
+      project: ProjectDto,
+      @UploadedFile("script") file: any
    ) {
       try {
          console.log("CONTROLLER: ", project);
-         return await this.projectService.createProject(project);
+         return await this.projectService.createProject(project, file);
       } catch (e) {
          console.log("ERROR: ", e);
          throw e;

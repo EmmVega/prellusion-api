@@ -7,20 +7,21 @@ import PdfParse from "pdf-parse/lib/pdf-parse.js";
 import OpenAI from "openai";
 import { CRUDService } from "./CRUD-service.js";
 
+import { publishMessage } from "./pubsub-service.js";
+
 class ProjectService extends CRUDService<typeof db.Project> {
    constructor() {
       // Call the constructor of CRUDService with appropriate values for Project
       super('Project', db.Project, 'User', db.User);  // 'User' and 'User' are just examples for your parent entity
    }
    public openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-   public async createProject(project: ProjectDto) {
-      // save the file to gcp
-      // save and add the id to the project
-      // save the project to the db
-      // pdfParse the file and generate the scenes from the response
-      // save the scenes to the db
-      // return the project
+   public async createProject(project: ProjectDto, file: any) {
       const response = await db.Project.create(project);
+      const projectId = response.dataValues.id;
+      const filePath = file.path;
+
+      await publishMessage('script-processing', { projectId, filePath });
+
       return response.dataValues;
    }
 
