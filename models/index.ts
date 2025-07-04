@@ -2,25 +2,41 @@ import * as fs from "fs";
 import * as path from "path";
 import { Sequelize, DataTypes } from "sequelize";
 import * as process from "process";
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const configPath = path.join(__dirname, '../config/config.json');
-const configJson = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
 
 const basename = path.basename((new URL(import.meta.url).pathname));
 const env = process.env.NODE_ENV || "development";
-const config = configJson[env];
 const db: any = {};
 
 let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
+if (process.env.DB_DATABASE && process.env.DB_USERNAME && process.env.DB_PASSWORD) {
   sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
+    process.env.DB_DATABASE,
+    process.env.DB_USERNAME,
+    process.env.DB_PASSWORD,
+    {
+      host: process.env.DB_HOST,
+      dialect: 'postgres'
+    }
   );
+} else {
+  const configPath = path.join(__dirname, '../config/config.json');
+  const configJson = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+  const config = configJson[env];
+  if (config.use_env_variable) {
+    sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  } else {
+    sequelize = new Sequelize(
+      config.database,
+      config.username,
+      config.password,
+      config
+    );
+  }
 }
 
 await fs.promises.readdir(__dirname).then(async (files) => {
