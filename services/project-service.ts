@@ -16,13 +16,21 @@ class ProjectService extends CRUDService<typeof db.Project> {
    }
    public openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
    public async createProject(project: ProjectDto, file: any) {
-      const response = await db.Project.create(project);
-      const projectId = response.dataValues.id;
+      const newProject = await db.Project.create(project);
+      const projectId = newProject.dataValues.id;
       const filePath = file.path;
 
-      await publishMessage('script-processing', { projectId, filePath });
-
-      return response.dataValues;
+      try {
+         await publishMessage('script-processing', { projectId, filePath });
+         return newProject.dataValues;
+      } catch (error) {
+         // If publishing the message fails, we must delete the created project
+         // to avoid leaving the system in an inconsistent state.
+         await db.Project.destroy({ where: { id: projectId } });
+         console.error("Failed to publish script processing message. Rolled back project creation.", error);
+         // Re-throw a more specific error to the controller
+         throw new Error("Failed to initiate script processing after project creation.");
+      }
    }
 
    public async getProjectById(id: number) {
