@@ -19,7 +19,7 @@ const projectResolvers = {
     },
     Mutation: {
         createProjectMutation: resolverWrapper((_, args) => {
-            return projectService.createProject(args.project);
+            return projectService.createProject(args.project, args.file);
         }),
         deleteProjectsMutation: resolverWrapper((_, args) => {
             return projectService.deleteProjectsByIds(args.projectIds)
