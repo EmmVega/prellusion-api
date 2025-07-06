@@ -30,7 +30,6 @@ class App {
       this.app.use(
          '/graphql',
          cors<cors.CorsRequest>(),
-         express.json(),
          graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 1 }),
          expressMiddleware(server, {
             context: async ({ req }) => ({ token: req.headers.token }),

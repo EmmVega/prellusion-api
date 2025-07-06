@@ -21,9 +21,9 @@ const projectResolvers = {
         })
     },
     Mutation: {
-        createProject: resolverWrapper(async (_, { project }) => {
-            const { file, name, draft } = project;
-            const { createReadStream, filename } = await file;
+        createProject: resolverWrapper(async (_, args) => {
+            const { file, name, draft } = args.project;
+            const { createReadStream, filename } = await file.file;
             
             // 1. Get the file stream
             const stream = createReadStream();
