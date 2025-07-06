@@ -1,14 +1,14 @@
+scalar Upload
+
 type Project {
     id: Int!
-    userId: Int!
     name: String!
-    draft: String!
+    draft: Float!
     fileId: String
 }
 
 input CreateProjectInput {
-    userId: Int!
+    file: Upload!
     name: String!
-    draft: String!
-    fileId: String
+    draft: Float!
 }

@@ -1,53 +1,48 @@
 
 import concectDB from "../db/index.js";
-// import { GlobalErrorHandler } from "../middlewares/Error-middleware";
-// import { CorsMiddleware } from "../middlewares/cors-middleware";
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import { resolvers } from "../graphql/resolvers/index.js";
 import typeDefs from "../graphql/typedefs/index.js";
 
 class App {
-   public server
-   // public app: express.Application;
-   public env: string;
+   public app: express.Application;
    public port: number;
 
    constructor() {
-      // this.app = express();
+      this.app = express();
       this.port = 4000;
-
-      // this.initializeMiddlewares();
-      this.initializeApolloServer(); // Add this line
    }
 
-   // private initializeMiddlewares() {
-   //     this.app
-   // }
-
    public async listen() {
-      //   Passing an ApolloServer instance to the `startStandaloneServer` function:
-      //    1. creates an Express app
-      //    2. installs your ApolloServer instance as middleware
-      //    3. prepares your app to handle incoming requests
-      const { url } = await startStandaloneServer(this.server, {
-         listen: { port: this.port },
+      const httpServer = http.createServer(this.app);
+      const server = new ApolloServer({
+         typeDefs,
+         resolvers,
+         plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
       });
+      await server.start();
+      this.app.use(
+         '/graphql',
+         cors<cors.CorsRequest>(),
+         express.json(),
+         graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 1 }),
+         expressMiddleware(server, {
+            context: async ({ req }) => ({ token: req.headers.token }),
+         }),
+      );
 
-      console.log(`🚀  Server ready at: ${url}`);
+      await new Promise<void>((resolve) => httpServer.listen({ port: this.port }, resolve));
+      console.log(`🚀 Server ready at http://localhost:${this.port}/graphql`);
    }
 
    public dbConnection() {
       concectDB();
-   }
-
-   private initializeApolloServer() {
-      //   The ApolloServer constructor requires two parameters: your schema
-      // definition and your set of resolvers.
-      this.server = new ApolloServer({
-         typeDefs,
-         resolvers,
-      });
    }
 }
 

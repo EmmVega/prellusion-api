@@ -13,10 +13,9 @@ export default (sequelize, DataTypes) => {
    }
    Project.init(
       {
-         userId: DataTypes.INTEGER,
          name: DataTypes.STRING,
          draft: DataTypes.STRING,
-         fileId: DataTypes.INTEGER,
+         fileId: DataTypes.STRING,
       },
       {
          sequelize,
