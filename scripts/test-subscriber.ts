@@ -12,45 +12,73 @@ const topicName = 'script-processing';
 const subscriptionName = 'script-processing-sub';
 
 async function main() {
-    // Creates a new topic
+    console.log(`--- Starting Pub/Sub Setup ---`);
+
+    // Delete existing subscription if it exists
+    console.log(`Attempting to delete existing subscription: ${subscriptionName}...`);
+    try {
+        await pubSubClient.subscription(subscriptionName).delete();
+        console.log(`Subscription ${subscriptionName} deleted successfully.`);
+    } catch (error) {
+        if (error.code === 5) { // NOT_FOUND
+            console.log(`Subscription ${subscriptionName} not found, no need to delete.`);
+        } else {
+            console.error(`Error deleting subscription ${subscriptionName}: ${error.message}`);
+            // Do not exit, try to proceed if possible
+        }
+    }
+
+    // Delete existing topic if it exists
+    console.log(`Attempting to delete existing topic: ${topicName}...`);
+    try {
+        await pubSubClient.topic(topicName).delete();
+        console.log(`Topic ${topicName} deleted successfully.`);
+    } catch (error) {
+        if (error.code === 5) { // NOT_FOUND
+            console.log(`Topic ${topicName} not found, no need to delete.`);
+        } else {
+            console.error(`Error deleting topic ${topicName}: ${error.message}`);
+            // Do not exit, try to proceed if possible
+        }
+    }
+
+    // Create topic
+    console.log(`Attempting to create topic: ${topicName}...`);
     try {
         await pubSubClient.createTopic(topicName);
-        console.log(`Topic ${topicName} created.`);
+        console.log(`Topic ${topicName} created successfully.`);
     } catch (error) {
-        if (error.code !== 6) { // 6 means 'ALREADY_EXISTS'
-            console.error(`Received error while creating topic: ${error.message}`);
-            process.exit(1);
-        }
+        console.error(`Error creating topic ${topicName}: ${error.message}`);
+        process.exit(1);
     }
 
-    // Creates a new subscription
+    // Create push subscription
+    console.log(`Attempting to create push subscription: ${subscriptionName} for topic ${topicName}...`);
     try {
-        await pubSubClient.topic(topicName).createSubscription(subscriptionName);
-        console.log(`Subscription ${subscriptionName} created.`);
+        await pubSubClient.topic(topicName).createSubscription(subscriptionName, {
+            pushConfig: {
+                pushEndpoint: 'http://127.0.0.1:8080/ProcessScript', // Go parser's local endpoint
+                attributes: {
+                    'Content-Type': 'application/cloudevents+json',
+                },
+            },
+            ackDeadlineSeconds: 600, // Give the Go parser 10 minutes to process
+        });
+        console.log(`Push Subscription ${subscriptionName} created successfully, pointing to http://127.0.0.1:8080/ProcessScript.`);
     } catch (error) {
-        if (error.code !== 6) { // 6 means 'ALREADY_EXISTS'
-            console.error(`Received error while creating subscription: ${error.message}`);
-            process.exit(1);
-        }
+        console.error(`Error creating push subscription ${subscriptionName}: ${error.message}`);
+        process.exit(1);
     }
 
-    // Receive callbacks for new messages on the subscription
-    const subscription = pubSubClient.subscription(subscriptionName);
-    const messageHandler = message => {
-        console.log('\n--- Message Received ---');
-        console.log(`  Data: ${message.data}`);
-        console.log(`  Attributes: ${JSON.stringify(message.attributes)}`);
-        console.log('------------------------\n');
-
-        // "Ack" (acknowledge receipt of) the message
-        message.ack();
-    };
-
-    // Listen for new messages
-    subscription.on('message', messageHandler);
-
-    console.log(`\nListening for messages on ${subscriptionName}...`);
-    console.log('Press Ctrl+C to quit.\n');
+    console.log(`\n--- Local Pub/Sub Environment Setup Complete ---`);
+    console.log(`Topic: ${topicName}`);
+    console.log(`Push Subscription: ${subscriptionName} -> http://127.0.0.1:8080/ProcessScript`);
+    console.log(`
+Now, ensure your Go parser is running and listening on http://127.0.0.1:8080/ProcessScript`);
+    console.log(`Then, start your prellusion-api service and trigger the script upload.`);
+    console.log(`Check the Go parser's terminal for invocation logs.`);
+    console.log(`
+Press Ctrl+C to quit this setup script (the topic and subscription will persist).`);
 }
 
 main().catch(console.error);
