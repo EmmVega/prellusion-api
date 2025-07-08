@@ -54,17 +54,18 @@ async function main() {
 
     // Create push subscription
     console.log(`Attempting to create push subscription: ${subscriptionName} for topic ${topicName}...`);
+    const pushEndpoint = `http://127.0.0.1:8080/projects/${process.env.GCP_PROJECT_ID}/topics/${topicName}`;
     try {
         await pubSubClient.topic(topicName).createSubscription(subscriptionName, {
             pushConfig: {
-                pushEndpoint: 'http://127.0.0.1:8080/ProcessScript', // Go parser's local endpoint
+                pushEndpoint: pushEndpoint, // Go parser's local endpoint with proper path pattern
                 attributes: {
                     'Content-Type': 'application/cloudevents+json',
                 },
             },
             ackDeadlineSeconds: 600, // Give the Go parser 10 minutes to process
         });
-        console.log(`Push Subscription ${subscriptionName} created successfully, pointing to http://127.0.0.1:8080/ProcessScript.`);
+        console.log(`Push Subscription ${subscriptionName} created successfully, pointing to ${pushEndpoint}.`);
     } catch (error) {
         console.error(`Error creating push subscription ${subscriptionName}: ${error.message}`);
         process.exit(1);
@@ -72,9 +73,10 @@ async function main() {
 
     console.log(`\n--- Local Pub/Sub Environment Setup Complete ---`);
     console.log(`Topic: ${topicName}`);
-    console.log(`Push Subscription: ${subscriptionName} -> http://127.0.0.1:8080/ProcessScript`);
+    console.log(`Push Subscription: ${subscriptionName} -> ${pushEndpoint}`);
     console.log(`
-Now, ensure your Go parser is running and listening on http://127.0.0.1:8080/ProcessScript`);
+Now, ensure your Go parser is running and listening on http://127.0.0.1:8080`);
+    console.log(`The parser will receive requests at: ${pushEndpoint}`);
     console.log(`Then, start your prellusion-api service and trigger the script upload.`);
     console.log(`Check the Go parser's terminal for invocation logs.`);
     console.log(`
