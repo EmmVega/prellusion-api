@@ -11,7 +11,8 @@
     "undo": "npx sequelize-cli db:migrate:undo",
     "build": "tsc",
     "deleteDb": "npx sequelize-cli db:migrate:undo:all",
-    "resetDb": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate"
+    "resetDb": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate",
+    "pubSubEmulators": "node --loader ts-node/esm scripts/test-subscriber.ts"
   },
   "author": "EmmVega",
   "license": "ISC",
