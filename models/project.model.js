@@ -16,6 +16,11 @@ export default (sequelize, DataTypes) => {
          name: DataTypes.STRING,
          draft: DataTypes.STRING,
          fileId: DataTypes.STRING,
+         status: {
+            type: DataTypes.ENUM('pending', 'processing', 'completed', 'error'),
+            allowNull: false,
+            defaultValue: 'pending'
+         },
       },
       {
          sequelize,

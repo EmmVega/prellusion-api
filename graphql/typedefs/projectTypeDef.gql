@@ -5,6 +5,14 @@ type Project {
     name: String!
     draft: Float!
     fileId: String
+    status: ProjectStatus!
+}
+
+enum ProjectStatus {
+    pending
+    processing
+    completed
+    error
 }
 
 input CreateProjectInput {

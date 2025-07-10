@@ -27,6 +27,11 @@ class App {
          plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
       });
       await server.start();
+      
+      // Add JSON middleware before Apollo Server
+      this.app.use(express.json());
+      this.app.use(express.urlencoded({ extended: true }));
+      
       this.app.use(
          '/graphql',
          cors<cors.CorsRequest>(),
