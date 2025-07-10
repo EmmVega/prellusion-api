@@ -8,10 +8,8 @@ const pubSubClient = new PubSub({
     projectId: process.env.GCP_PROJECT_ID,
 });
 
-const scriptProcessingTopic = 'script-processing';
-const scriptProcessingSub = 'script-processing-sub';
-const completionTopic = 'parsing-completed';
-const completionSub = 'parsing-completed-sub';
+const topicName = 'script-processing';
+const subscriptionName = 'script-processing-sub';
 
 async function setupTopicAndSubscription(topicName: string, subscriptionName: string, pushEndpoint?: string) {
     console.log(`\n--- Setting up ${topicName} ---`);
@@ -88,27 +86,22 @@ async function main() {
     console.log(`--- Starting Pub/Sub Setup ---`);
 
     // Setup script processing topic (with push subscription to Go parser)
-    const scriptProcessingEndpoint = `http://127.0.0.1:8080/projects/${process.env.GCP_PROJECT_ID}/topics/${scriptProcessingTopic}`;
-    await setupTopicAndSubscription(scriptProcessingTopic, scriptProcessingSub, scriptProcessingEndpoint);
-
-    // Setup parsing completion topic (with pull subscription for API to consume)
-    await setupTopicAndSubscription(completionTopic, completionSub);
+    const pushEndpoint = `http://127.0.0.1:8080/projects/${process.env.GCP_PROJECT_ID}/topics/${topicName}`;
+    await setupTopicAndSubscription(topicName, subscriptionName, pushEndpoint);
 
     console.log(`\n--- Local Pub/Sub Environment Setup Complete ---`);
-    console.log(`\nTopics and Subscriptions:`);
-    console.log(`  1. ${scriptProcessingTopic} -> ${scriptProcessingSub} (push to Go parser)`);
-    console.log(`     Endpoint: ${scriptProcessingEndpoint}`);
-    console.log(`  2. ${completionTopic} -> ${completionSub} (pull by API)`);
+    console.log(`\nTopic and Subscription:`);
+    console.log(`  ${topicName} -> ${subscriptionName} (push to Go parser)`);
+    console.log(`  Endpoint: ${pushEndpoint}`);
     console.log(`
 Setup Instructions:
 1. Start your Go parser: 'go run cmd/main.go' (listening on :8080)
 2. Start your prellusion-api service
-3. The API can now:
-   - Publish to ${scriptProcessingTopic} to trigger script processing
-   - Subscribe to ${completionSub} to receive completion notifications
-4. Check the Go parser's terminal for processing logs
+3. Upload a script - API publishes to ${topicName} to trigger Go parser
+4. Go parser processes script and updates database directly
+5. UI polls database for results
 `);
-    console.log(`Press Ctrl+C to quit this setup script (topics and subscriptions will persist).`);
+    console.log(`Press Ctrl+C to quit this setup script (topic and subscription will persist).`);
 }
 
 main().catch(console.error);
