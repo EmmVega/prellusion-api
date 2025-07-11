@@ -12,7 +12,8 @@
     "build": "tsc",
     "deleteDb": "npx sequelize-cli db:migrate:undo:all",
     "resetDb": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate",
-    "pubSubEmulators": "node --loader ts-node/esm scripts/test-subscriber.ts"
+    "pubSubEmulators": "node --loader ts-node/esm scripts/test-subscriber.ts",
+    "dropDb": "dropdb -U postgres prellusion && createdb -U postgres prellusion && npm run migrate"
   },
   "author": "EmmVega",
   "license": "ISC",
