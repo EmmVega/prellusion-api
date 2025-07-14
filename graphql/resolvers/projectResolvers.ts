@@ -16,7 +16,7 @@ const resolverWrapper = (resolver) => async (...args) => {
 
 const projectResolvers = {
     Query: {
-        getShotsByProjectIdMutation: resolverWrapper((_, args) => {
+        getShotsByProjectIdQuery: resolverWrapper((_, args) => {
             return projectService.getProjectShots(args.projectId);
         })
     },
