@@ -22,7 +22,7 @@ const shotResolvers = {
             return shotService.deleteAll(args.sceneId, args.shotIds);
         },
         patchShotsMutation: async (_, args) => {
-            return shotService.patchAll(args.sceneId, args.shots)
+            return shotService.patchAllByProject(args.projectId, args.shots)
         }
     }
 

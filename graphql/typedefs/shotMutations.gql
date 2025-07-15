@@ -11,5 +11,5 @@ type Mutation {
 }
 
 type Mutation {
-    patchShotsMutation(sceneId: Int!, shots: [ShotPatchInput]): [Shot]
+    patchShotsMutation(projectId: Int!, shots: [ShotPatchInput]): [Shot]
 }
