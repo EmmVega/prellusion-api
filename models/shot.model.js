@@ -9,8 +9,8 @@ export default (sequelize, DataTypes) => {
        */
       static associate(models) {
          // define association here
-         Shot.belongsTo(models.ShotPlan, { foreignKey: "id" });
-         Shot.belongsTo(models.Scene, { foreignKey: "sceneId" })
+         Shot.belongsTo(models.Scene, { foreignKey: "sceneId" });
+         Shot.hasMany(models.ShotPlanUnit, { foreignKey: "shotId" });
       }
    }
    Shot.init(
