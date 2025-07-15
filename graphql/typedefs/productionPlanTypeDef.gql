@@ -1,0 +1,41 @@
+type ShotPlanDay {
+  id: Int!
+  projectId: Int!
+  date: String!
+  location: String!
+  generalArrival: String
+  photoArrival: String
+  soundArrival: String
+  makeupArrival: String
+  artArrival: String
+  caterings: [String]
+  ends: String
+  duration: String
+  shotPlanBlocks: [ShotPlanBlock]
+}
+
+type ShotPlanBlock {
+  id: Int!
+  shotPlanDayId: Int!
+  day: String
+  readyToShot: String
+  space: String
+  place: String
+  time: String
+  ends: String
+  totalSequences: Int
+  totalTimeSequence: String
+  shotPlanUnits: [ShotPlanUnit]
+}
+
+type ShotPlanUnit {
+  id: Int!
+  shotPlanBlockId: Int!
+  shotId: Int!
+  sceneNumber: Int
+  shotNumber: String
+  planeSequence: String
+  time: String
+  script: Int
+  notes: String
+}

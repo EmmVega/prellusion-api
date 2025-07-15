@@ -1,0 +1,7 @@
+type Mutation {
+  generateProductionPlan(projectId: Int!): ShotPlanDay
+}
+
+type Query {
+  getProductionPlan(projectId: Int!): ShotPlanDay
+}
