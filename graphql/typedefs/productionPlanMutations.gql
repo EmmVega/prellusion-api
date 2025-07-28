@@ -1,5 +1,58 @@
+input ShotPlanDayInput {
+  id: Int
+  projectId: Int!
+  date: String!
+  location: String!
+  generalArrival: String
+  photoArrival: String
+  soundArrival: String
+  makeupArrival: String
+  artArrival: String
+  caterings: [String]
+  ends: String
+  duration: String
+}
+
+input ShotPlanBlockInput {
+  id: Int
+  shotPlanDayId: Int
+  readyToShot: String
+  space: String
+  place: String
+  time: String
+  ends: String
+  totalSequences: Int
+  totalTimeSequence: String
+}
+
+input ShotPlanUnitInput {
+  id: Int
+  shotPlanBlockId: Int
+  shotId: Int
+  sceneNumber: Int
+  shotNumber: String
+  planeSequence: String
+  time: String
+  script: Int
+  notes: String
+}
+
+input UpdateProductionPlanInput {
+  projectId: Int!
+  days: [ShotPlanDayInput!]!
+  blocks: [ShotPlanBlockInput!]!
+  units: [ShotPlanUnitInput!]!
+}
+
+type UpdateProductionPlanResponse {
+  success: Boolean!
+  message: String
+  data: ShotPlanDay
+}
+
 type Mutation {
   generateProductionPlan(projectId: Int!): ShotPlanDay
+  updateProductionPlan(input: UpdateProductionPlanInput!): UpdateProductionPlanResponse
 }
 
 type Query {

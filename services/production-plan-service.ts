@@ -104,6 +104,129 @@ class ProductionPlanService {
         });
     }
 
+    async updateProductionPlan(input: any) {
+        return await db.ShotPlanDay.sequelize.transaction(async (transaction: Transaction) => {
+            const { projectId, days, blocks, units } = input;
+
+            // Validate project exists
+            const project = await db.Project.findByPk(projectId, { transaction });
+            if (!project) {
+                throw new Error(`Project ${projectId} not found`);
+            }
+
+            const results = { createdDays: [], updatedDays: [], createdBlocks: [], updatedBlocks: [], createdUnits: [], updatedUnits: [] };
+
+            // Process Days - upsert (create or update)
+            for (const dayInput of days) {
+                const dayData = {
+                    projectId: dayInput.projectId,
+                    date: dayInput.date,
+                    location: dayInput.location,
+                    generalArrival: dayInput.generalArrival,
+                    photoArrival: dayInput.photoArrival,
+                    soundArrival: dayInput.soundArrival,
+                    makeupArrival: dayInput.makeupArrival,
+                    artArrival: dayInput.artArrival,
+                    caterings: dayInput.caterings || [],
+                    ends: dayInput.ends,
+                    duration: dayInput.duration
+                };
+
+                let day;
+                if (dayInput.id && dayInput.id > 0) {
+                    // Update existing day
+                    day = await db.ShotPlanDay.findByPk(dayInput.id, { transaction });
+                    if (day) {
+                        await day.update(dayData, { transaction });
+                        results.updatedDays.push(day);
+                    } else {
+                        throw new Error(`Day with ID ${dayInput.id} not found`);
+                    }
+                } else {
+                    // Create new day (ignore temporary ID)
+                    day = await db.ShotPlanDay.create(dayData, { transaction });
+                    results.createdDays.push(day);
+                }
+            }
+
+            // Process Blocks - upsert (create or update)
+            for (const blockInput of blocks) {
+                const blockData = {
+                    shotPlanDayId: blockInput.shotPlanDayId,
+                    readyToShot: blockInput.readyToShot,
+                    space: blockInput.space,
+                    place: blockInput.place,
+                    time: blockInput.time,
+                    ends: blockInput.ends,
+                    totalSequences: blockInput.totalSequences,
+                    totalTimeSequence: blockInput.totalTimeSequence
+                };
+
+                let block;
+                if (blockInput.id && blockInput.id > 0) {
+                    // Update existing block
+                    block = await db.ShotPlanBlock.findByPk(blockInput.id, { transaction });
+                    if (block) {
+                        await block.update(blockData, { transaction });
+                        results.updatedBlocks.push(block);
+                    } else {
+                        throw new Error(`Block with ID ${blockInput.id} not found`);
+                    }
+                } else {
+                    // Create new block (ignore temporary ID)
+                    block = await db.ShotPlanBlock.create(blockData, { transaction });
+                    results.createdBlocks.push(block);
+                }
+            }
+
+            // Process Units - upsert (create or update)
+            for (const unitInput of units) {
+                const unitData = {
+                    shotPlanBlockId: unitInput.shotPlanBlockId,
+                    shotId: unitInput.shotId,
+                    sceneNumber: unitInput.sceneNumber,
+                    shotNumber: unitInput.shotNumber,
+                    planeSequence: unitInput.planeSequence,
+                    time: unitInput.time,
+                    script: unitInput.script,
+                    notes: unitInput.notes
+                };
+
+                let unit;
+                if (unitInput.id && unitInput.id > 0) {
+                    // Update existing unit
+                    unit = await db.ShotPlanUnit.findByPk(unitInput.id, { transaction });
+                    if (unit) {
+                        await unit.update(unitData, { transaction });
+                        results.updatedUnits.push(unit);
+                    } else {
+                        throw new Error(`Unit with ID ${unitInput.id} not found`);
+                    }
+                } else {
+                    // Create new unit (ignore temporary ID)
+                    unit = await db.ShotPlanUnit.create(unitData, { transaction });
+                    results.createdUnits.push(unit);
+                }
+            }
+
+            // Fetch the updated production plan to return
+            const updatedPlan = await db.ShotPlanDay.findOne({
+                where: { projectId },
+                include: [{
+                    model: db.ShotPlanBlock,
+                    include: [db.ShotPlanUnit]
+                }],
+                transaction
+            });
+
+            return {
+                success: true,
+                message: `Production plan updated successfully. Created: ${results.createdDays.length} days, ${results.createdBlocks.length} blocks, ${results.createdUnits.length} units. Updated: ${results.updatedDays.length} days, ${results.updatedBlocks.length} blocks, ${results.updatedUnits.length} units.`,
+                data: updatedPlan
+            };
+        });
+    }
+
     // Helper methods
     private calculateBlockDuration(shotCount: number): string {
         const minutesPerShot = 15;

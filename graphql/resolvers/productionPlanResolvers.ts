@@ -18,6 +18,9 @@ const productionPlanResolvers = {
     Mutation: {
         generateProductionPlan: resolverWrapper(async (_, args) => {
             return productionPlanService.generateProductionPlan(args.projectId);
+        }),
+        updateProductionPlan: resolverWrapper(async (_, args) => {
+            return productionPlanService.updateProductionPlan(args.input);
         })
     }
 };
