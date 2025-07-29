@@ -24,13 +24,13 @@ export default (sequelize, DataTypes) => {
             },
             shotId: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: true, // Make nullable for MVP
                 references: {
                     model: 'Shots',
                     key: 'id',
                 },
                 onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
+                onDelete: 'SET NULL',
             },
             // Denormalized fields for quick access (without joins)
             sceneNumber: DataTypes.INTEGER,
@@ -38,11 +38,12 @@ export default (sequelize, DataTypes) => {
             planeSequence: DataTypes.STRING,
             time: DataTypes.STRING, // Format: "H:MM" (time duration for this shot)
             script: DataTypes.INTEGER, // Script page number (inherited from scene/shot)
-            notes: DataTypes.STRING,
+            notes: DataTypes.STRING
         },
         {
             sequelize,
-            modelName: "ShotPlanUnit"
+            modelName: "ShotPlanUnit",
+            timestamps: true
         }
     );
     

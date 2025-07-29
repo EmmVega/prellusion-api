@@ -28,11 +28,12 @@ export default (sequelize, DataTypes) => {
             time: DataTypes.STRING,  // Day/Night/Morning etc
             ends: DataTypes.TIME,
             totalSequences: DataTypes.INTEGER,
-            totalTimeSequence: DataTypes.STRING, // Format: "H:MM"
+            totalTimeSequence: DataTypes.STRING // Format: "H:MM"
         },
         {
             sequelize,
-            modelName: "ShotPlanBlock"
+            modelName: "ShotPlanBlock",
+            timestamps: true
         }
     );
     

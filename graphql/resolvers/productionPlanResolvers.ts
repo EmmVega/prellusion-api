@@ -13,7 +13,7 @@ const productionPlanResolvers = {
     Query: {
         getProductionPlan: resolverWrapper((_, args) => {
             return productionPlanService.getProductionPlan(args.projectId);
-        })
+        }),
     },
     Mutation: {
         generateProductionPlan: resolverWrapper(async (_, args) => {

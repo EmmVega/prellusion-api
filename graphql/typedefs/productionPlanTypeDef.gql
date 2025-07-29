@@ -11,6 +11,8 @@ type ShotPlanDay {
   caterings: [String]
   ends: String
   duration: String
+  createdAt: String
+  updatedAt: String
   ShotPlanBlocks: [ShotPlanBlock]
 }
 
@@ -25,6 +27,8 @@ type ShotPlanBlock {
   ends: String
   totalSequences: Int
   totalTimeSequence: String
+  createdAt: String
+  updatedAt: String
   ShotPlanUnits: [ShotPlanUnit]
 }
 
@@ -38,4 +42,6 @@ type ShotPlanUnit {
   time: String
   script: Int
   notes: String
+  createdAt: String
+  updatedAt: String
 }

@@ -1,5 +1,5 @@
 import { db } from "../models/index.js";
-import { Transaction } from "sequelize";
+import { Transaction, Op } from "sequelize";
 
 class ProductionPlanService {
     
@@ -114,7 +114,24 @@ class ProductionPlanService {
                 throw new Error(`Project ${projectId} not found`);
             }
 
-            const results = { createdDays: [], updatedDays: [], createdBlocks: [], updatedBlocks: [], createdUnits: [], updatedUnits: [] };
+            const results = { createdDays: [], updatedDays: [], deletedDays: [], replacedBlocks: [] };
+
+            // HARD DELETE: Remove days that exist in DB but not in input
+            const existingDays = await db.ShotPlanDay.findAll({
+                where: { projectId },
+                transaction
+            });
+            
+            const inputDayIds = days.filter(d => d.id && d.id > 0).map(d => d.id);
+            const daysToDelete = existingDays.filter(d => !inputDayIds.includes(d.id));
+            
+            for (const dayToDelete of daysToDelete) {
+                await db.ShotPlanDay.destroy({
+                    where: { id: dayToDelete.id },
+                    transaction
+                });
+                results.deletedDays.push(dayToDelete);
+            }
 
             // Process Days - upsert (create or update)
             for (const dayInput of days) {
@@ -147,71 +164,55 @@ class ProductionPlanService {
                     day = await db.ShotPlanDay.create(dayData, { transaction });
                     results.createdDays.push(day);
                 }
-            }
 
-            // Process Blocks - upsert (create or update)
-            for (const blockInput of blocks) {
-                const blockData = {
-                    shotPlanDayId: blockInput.shotPlanDayId,
-                    readyToShot: blockInput.readyToShot,
-                    space: blockInput.space,
-                    place: blockInput.place,
-                    time: blockInput.time,
-                    ends: blockInput.ends,
-                    totalSequences: blockInput.totalSequences,
-                    totalTimeSequence: blockInput.totalTimeSequence
-                };
+                // HARD DELETE: Replace all blocks for this day
+                // Delete existing blocks (units will be reassigned, not deleted)
+                await db.ShotPlanBlock.destroy({
+                    where: { shotPlanDayId: day.id },
+                    transaction
+                });
 
-                let block;
-                if (blockInput.id && blockInput.id > 0) {
-                    // Update existing block
-                    block = await db.ShotPlanBlock.findByPk(blockInput.id, { transaction });
-                    if (block) {
-                        await block.update(blockData, { transaction });
-                        results.updatedBlocks.push(block);
-                    } else {
-                        throw new Error(`Block with ID ${blockInput.id} not found`);
+                // Create new blocks from input (without creating units)
+                const dayBlocks = blocks.filter(b => b.shotPlanDayId === day.id);
+                for (const blockInput of dayBlocks) {
+                    const blockData = {
+                        shotPlanDayId: day.id,
+                        readyToShot: blockInput.readyToShot,
+                        space: blockInput.space,
+                        place: blockInput.place,
+                        time: blockInput.time,
+                        ends: blockInput.ends,
+                        totalSequences: blockInput.totalSequences || 0,
+                        totalTimeSequence: blockInput.totalTimeSequence || "0:00"
+                    };
+
+                    const newBlock = await db.ShotPlanBlock.create(blockData, { transaction });
+                    results.replacedBlocks.push(newBlock);
+
+                    // UPDATE existing units to point to new block and update their scheduling info
+                    const blockUnits = units.filter(u => u.shotPlanBlockId === blockInput.id);
+                    for (const unitInput of blockUnits) {
+                        if (unitInput.id) {
+                            await db.ShotPlanUnit.update(
+                                { 
+                                    shotPlanBlockId: newBlock.id,
+                                    // Only update editable scheduling fields, not content fields
+                                    time: unitInput.time,
+                                    notes: unitInput.notes
+                                    // DON'T update: sceneNumber, shotNumber, planeSequence, script, shotId
+                                },
+                                { 
+                                    where: { id: unitInput.id },
+                                    transaction 
+                                }
+                            );
+                        }
                     }
-                } else {
-                    // Create new block (ignore temporary ID)
-                    block = await db.ShotPlanBlock.create(blockData, { transaction });
-                    results.createdBlocks.push(block);
                 }
             }
 
-            // Process Units - upsert (create or update)
-            for (const unitInput of units) {
-                const unitData = {
-                    shotPlanBlockId: unitInput.shotPlanBlockId,
-                    shotId: unitInput.shotId,
-                    sceneNumber: unitInput.sceneNumber,
-                    shotNumber: unitInput.shotNumber,
-                    planeSequence: unitInput.planeSequence,
-                    time: unitInput.time,
-                    script: unitInput.script,
-                    notes: unitInput.notes
-                };
-
-                let unit;
-                if (unitInput.id && unitInput.id > 0) {
-                    // Update existing unit
-                    unit = await db.ShotPlanUnit.findByPk(unitInput.id, { transaction });
-                    if (unit) {
-                        await unit.update(unitData, { transaction });
-                        results.updatedUnits.push(unit);
-                    } else {
-                        throw new Error(`Unit with ID ${unitInput.id} not found`);
-                    }
-                } else {
-                    // Create new unit (ignore temporary ID)
-                    unit = await db.ShotPlanUnit.create(unitData, { transaction });
-                    results.createdUnits.push(unit);
-                }
-            }
-
-            // Fetch the updated production plan to return
-            const updatedPlan = await db.ShotPlanDay.findOne({
-                where: { projectId },
+            // Return the first day with all relationships for compatibility
+            const resultDay = await db.ShotPlanDay.findByPk(results.updatedDays[0]?.id || results.createdDays[0]?.id, {
                 include: [{
                     model: db.ShotPlanBlock,
                     include: [db.ShotPlanUnit]
@@ -221,8 +222,8 @@ class ProductionPlanService {
 
             return {
                 success: true,
-                message: `Production plan updated successfully. Created: ${results.createdDays.length} days, ${results.createdBlocks.length} blocks, ${results.createdUnits.length} units. Updated: ${results.updatedDays.length} days, ${results.updatedBlocks.length} blocks, ${results.updatedUnits.length} units.`,
-                data: updatedPlan
+                message: `Production plan updated successfully. ${results.deletedDays.length} days deleted, ${results.replacedBlocks.length} blocks replaced. Units reassigned to new blocks.`,
+                data: resultDay
             };
         });
     }

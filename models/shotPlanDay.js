@@ -38,11 +38,12 @@ export default (sequelize, DataTypes) => {
             // Catering times as array
             caterings: DataTypes.ARRAY(DataTypes.TIME),
             ends: DataTypes.TIME,
-            duration: DataTypes.STRING, // Format: "HH:MM"
+            duration: DataTypes.STRING // Format: "HH:MM"
         },
         {
             sequelize,
-            modelName: "ShotPlanDay"
+            modelName: "ShotPlanDay",
+            timestamps: true
         }
     );
     
