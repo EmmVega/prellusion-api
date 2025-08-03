@@ -107,6 +107,7 @@ class ProductionPlanService {
     async updateProductionPlan(input: any) {
         return await db.ShotPlanDay.sequelize.transaction(async (transaction: Transaction) => {
             const { projectId, days, blocks, units } = input;
+            
 
             // Validate project exists
             const project = await db.Project.findByPk(projectId, { transaction });
@@ -165,15 +166,29 @@ class ProductionPlanService {
                     results.createdDays.push(day);
                 }
 
-                // HARD DELETE: Replace all blocks for this day
-                // Delete existing blocks (units will be reassigned, not deleted)
-                await db.ShotPlanBlock.destroy({
+                // UPDATE existing blocks instead of deleting and recreating
+                const dayBlocks = blocks.filter(b => b.shotPlanDayId === day.id);
+                
+                // Get existing blocks for this day
+                const existingBlocks = await db.ShotPlanBlock.findAll({
                     where: { shotPlanDayId: day.id },
                     transaction
                 });
-
-                // Create new blocks from input (without creating units)
-                const dayBlocks = blocks.filter(b => b.shotPlanDayId === day.id);
+                
+                // Delete blocks that no longer exist in input
+                const inputBlockIds = dayBlocks.filter(b => b.id && b.id > 0).map(b => b.id);
+                const blocksToDelete = existingBlocks.filter(b => !inputBlockIds.includes(b.id));
+                for (const blockToDelete of blocksToDelete) {
+                    await db.ShotPlanBlock.destroy({
+                        where: { id: blockToDelete.id },
+                        transaction
+                    });
+                }
+                
+                // Create a mapping for block ID updates
+                const blockIdMapping = new Map();
+                
+                // Update or create blocks
                 for (const blockInput of dayBlocks) {
                     const blockData = {
                         shotPlanDayId: day.id,
@@ -186,16 +201,36 @@ class ProductionPlanService {
                         totalTimeSequence: blockInput.totalTimeSequence || "0:00"
                     };
 
-                    const newBlock = await db.ShotPlanBlock.create(blockData, { transaction });
-                    results.replacedBlocks.push(newBlock);
+                    if (blockInput.id && blockInput.id > 0) {
+                        // Update existing block
+                        const existingBlock = await db.ShotPlanBlock.findByPk(blockInput.id, { transaction });
+                        if (existingBlock) {
+                            await existingBlock.update(blockData, { transaction });
+                            results.replacedBlocks.push(existingBlock);
+                            blockIdMapping.set(blockInput.id, existingBlock.id); // Same ID
+                        } else {
+                            // Block doesn't exist, create new one
+                            const newBlock = await db.ShotPlanBlock.create(blockData, { transaction });
+                            results.replacedBlocks.push(newBlock);
+                            blockIdMapping.set(blockInput.id, newBlock.id); // Map old to new
+                        }
+                    } else {
+                        // Create new block (temporary frontend ID)
+                        const newBlock = await db.ShotPlanBlock.create(blockData, { transaction });
+                        results.replacedBlocks.push(newBlock);
+                        blockIdMapping.set(blockInput.id, newBlock.id); // Map temp to real
+                    }
+                }
 
-                    // UPDATE existing units to point to new block and update their scheduling info
-                    const blockUnits = units.filter(u => u.shotPlanBlockId === blockInput.id);
-                    for (const unitInput of blockUnits) {
-                        if (unitInput.id) {
+                // UPDATE existing units with new block assignments and scheduling info
+                for (const unitInput of units) {
+                    if (unitInput.id && unitInput.id > 0) {
+                        const newBlockId = blockIdMapping.get(unitInput.shotPlanBlockId);
+                        
+                        if (newBlockId) {
                             await db.ShotPlanUnit.update(
                                 { 
-                                    shotPlanBlockId: newBlock.id,
+                                    shotPlanBlockId: newBlockId,
                                     // Only update editable scheduling fields, not content fields
                                     time: unitInput.time,
                                     notes: unitInput.notes
