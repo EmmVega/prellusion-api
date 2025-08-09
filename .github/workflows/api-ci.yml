@@ -2,9 +2,9 @@ name: API CI
 
 on:
   push:
-    branches: [ main, develop, EcmaScript ]
+    branches: [ main, develop, EcmaScript6 ]
   pull_request:
-    branches: [ main, develop, EcmaScript ]
+    branches: [ main, develop, EcmaScript6 ]
 
 jobs:
   test:
