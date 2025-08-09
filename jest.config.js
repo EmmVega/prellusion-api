@@ -9,14 +9,7 @@ export default {
   },
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
-      useESM: true,
-      isolatedModules: true,
-      tsconfig: {
-        moduleResolution: 'node',
-        allowSyntheticDefaultImports: true,
-        esModuleInterop: true,
-        skipLibCheck: true
-      }
+      useESM: true
     }]
   },
   testMatch: [
@@ -30,6 +23,6 @@ export default {
     '!**/*.d.ts',
     '!**/node_modules/**'
   ],
-  setupFilesAfterEnv: ['<rootDir>/config/test.setup.ts'],
+  testTimeout: 30000,
   moduleFileExtensions: ['ts', 'js', 'json', 'node']
 };

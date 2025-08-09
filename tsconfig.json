@@ -7,5 +7,7 @@
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
         "experimentalDecorators": true,
+        "isolatedModules": true,
+        "skipLibCheck": true
     }
 }
