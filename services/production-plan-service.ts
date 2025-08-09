@@ -1,5 +1,11 @@
 import { db } from "../models/index.js";
 import { Transaction, Op } from "sequelize";
+import { 
+    calculateBlockDuration,
+    parseTimeToMinutes,
+    formatMinutesToDuration,
+    addTimeToTime
+} from "../utils/time-calculations.js";
 
 class ProductionPlanService {
     
@@ -49,8 +55,8 @@ class ProductionPlanService {
             
             for (const [locationKey, locationShots] of shotsByLocation) {
                 const firstShot = locationShots[0];
-                const estimatedDuration = this.calculateBlockDuration(locationShots.length);
-                const blockEndTime = this.addTimeToTime(blockStartTime, estimatedDuration);
+                const estimatedDuration = calculateBlockDuration(locationShots.length);
+                const blockEndTime = addTimeToTime(blockStartTime, estimatedDuration);
                 
                 const shotPlanBlock = await db.ShotPlanBlock.create({
                     shotPlanDayId: shotPlanDay.id,
@@ -88,14 +94,14 @@ class ProductionPlanService {
             // Calculate actual end time and duration based on created blocks
             if (shotPlanBlocks.length > 0) {
                 const lastBlock = shotPlanBlocks[shotPlanBlocks.length - 1];
-                const dayStartTime = this.parseTimeToMinutes("08:00:00"); // General arrival time
-                const lastBlockEndTime = this.parseTimeToMinutes(lastBlock.ends);
+                const dayStartTime = parseTimeToMinutes("08:00:00"); // General arrival time
+                const lastBlockEndTime = parseTimeToMinutes(lastBlock.ends);
                 const totalDurationMinutes = lastBlockEndTime - dayStartTime;
                 
                 // Update the day with calculated values
                 await shotPlanDay.update({
                     ends: lastBlock.ends,
-                    duration: this.formatMinutesToDuration(totalDurationMinutes)
+                    duration: formatMinutesToDuration(totalDurationMinutes)
                 }, { transaction });
             }
 
@@ -279,45 +285,7 @@ class ProductionPlanService {
         });
     }
 
-    // Helper methods
-    private calculateBlockDuration(shotCount: number): string {
-        const minutesPerShot = 15;
-        // Removed setup time - block duration should equal sum of unit times
-        const totalMinutes = (shotCount * minutesPerShot);
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-        return `${hours}:${minutes.toString().padStart(2, '0')}`;
-    }
-
-    private parseTimeToMinutes(timeString: string): number {
-        const [hours, minutes] = timeString.split(':').map(Number);
-        return (hours || 0) * 60 + (minutes || 0);
-    }
-
-    private formatMinutesToDuration(totalMinutes: number): string {
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-        return `${hours}:${minutes.toString().padStart(2, '0')}`;
-    }
-
-    private addTimeToTime(baseTime: string, addTime: string, breakTime: string = "0:00"): string {
-        const parseTime = (time: string) => {
-            const [hours, minutes] = time.split(':').map(Number);
-            return hours * 60 + minutes;
-        };
-
-        const formatTime = (totalMinutes: number) => {
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
-        };
-
-        const baseMinutes = parseTime(baseTime);
-        const addMinutes = parseTime(addTime);
-        const breakMinutes = parseTime(breakTime);
-        
-        return formatTime(baseMinutes + addMinutes + breakMinutes);
-    }
+    // Helper methods moved to utils/time-calculations.ts
 }
 
 export const productionPlanService = new ProductionPlanService();
