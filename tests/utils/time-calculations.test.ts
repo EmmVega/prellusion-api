@@ -4,7 +4,7 @@ import {
   parseTimeToMinutes,
   formatMinutesToDuration,
   addTimeToTime
-} from '../../utils/time-calculations';
+} from '../../utils/time-calculations.js';
 
 describe('Time Calculation Utilities', () => {
   describe('calculateBlockDuration', () => {
