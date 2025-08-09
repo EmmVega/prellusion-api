@@ -28,9 +28,9 @@ class ProductionPlanService {
                 soundArrival: "07:45:00",
                 makeupArrival: "07:00:00",
                 artArrival: "07:15:00",
-                caterings: ["12:00:00", "18:00:00"], // Lunch and dinner
-                ends: "20:00:00",
-                duration: "12:00" // 12 hours
+                caterings: [], // No caterings initially - let UI handle this
+                ends: "18:00:00", // Will be calculated based on blocks
+                duration: "10:00" // Will be calculated based on blocks
             }, { transaction });
 
             // Group shots by location (space + place)
@@ -45,11 +45,12 @@ class ProductionPlanService {
 
             // Create ShotPlanBlocks for each location
             const shotPlanBlocks = [];
-            let blockStartTime = "09:00:00";
+            let blockStartTime = "08:00:00"; // Start first block at 8:00 AM
             
             for (const [locationKey, locationShots] of shotsByLocation) {
                 const firstShot = locationShots[0];
                 const estimatedDuration = this.calculateBlockDuration(locationShots.length);
+                const blockEndTime = this.addTimeToTime(blockStartTime, estimatedDuration);
                 
                 const shotPlanBlock = await db.ShotPlanBlock.create({
                     shotPlanDayId: shotPlanDay.id,
@@ -58,7 +59,7 @@ class ProductionPlanService {
                     space: firstShot.Scene.space,
                     place: firstShot.Scene.place, 
                     time: firstShot.Scene.time,
-                    ends: this.addTimeToTime(blockStartTime, estimatedDuration),
+                    ends: blockEndTime,
                     totalSequences: locationShots.length,
                     totalTimeSequence: estimatedDuration
                 }, { transaction });
@@ -79,8 +80,23 @@ class ProductionPlanService {
                     }, { transaction });
                 }
 
-                // Update start time for next block
-                blockStartTime = this.addTimeToTime(blockStartTime, estimatedDuration, "0:30"); // 30 min break
+                // Update start time for next block - use the end time of current block
+                // This ensures perfect back-to-back scheduling
+                blockStartTime = shotPlanBlock.ends;
+            }
+
+            // Calculate actual end time and duration based on created blocks
+            if (shotPlanBlocks.length > 0) {
+                const lastBlock = shotPlanBlocks[shotPlanBlocks.length - 1];
+                const dayStartTime = this.parseTimeToMinutes("08:00:00"); // General arrival time
+                const lastBlockEndTime = this.parseTimeToMinutes(lastBlock.ends);
+                const totalDurationMinutes = lastBlockEndTime - dayStartTime;
+                
+                // Update the day with calculated values
+                await shotPlanDay.update({
+                    ends: lastBlock.ends,
+                    duration: this.formatMinutesToDuration(totalDurationMinutes)
+                }, { transaction });
             }
 
             // Return the complete production plan with all relationships
@@ -266,8 +282,19 @@ class ProductionPlanService {
     // Helper methods
     private calculateBlockDuration(shotCount: number): string {
         const minutesPerShot = 15;
-        const setupTime = 30; // 30 minutes setup per location
-        const totalMinutes = (shotCount * minutesPerShot) + setupTime;
+        // Removed setup time - block duration should equal sum of unit times
+        const totalMinutes = (shotCount * minutesPerShot);
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        return `${hours}:${minutes.toString().padStart(2, '0')}`;
+    }
+
+    private parseTimeToMinutes(timeString: string): number {
+        const [hours, minutes] = timeString.split(':').map(Number);
+        return (hours || 0) * 60 + (minutes || 0);
+    }
+
+    private formatMinutesToDuration(totalMinutes: number): string {
         const hours = Math.floor(totalMinutes / 60);
         const minutes = totalMinutes % 60;
         return `${hours}:${minutes.toString().padStart(2, '0')}`;
